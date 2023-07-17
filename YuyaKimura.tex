@@ -1,0 +1,96 @@
+\documentclass[uplatex, twocolumn,10pt]{jsarticle}
+
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{latexsym}
+\usepackage{bmpsize}
+\usepackage{url}
+\usepackage{comment}
+
+\def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
+\def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
+
+\newcommand{\ttt}[1]{\texttt{#1}}
+
+\begin{document}
+
+\title{\bf{\LARGE{PP-OCR: A Practical Ultra Lightweight OCR System} \\ \Large{PP-OCR: 実用的な超軽量OCRシステム}}}
+\author{木村 優哉\\宮崎大学大学院}
+\date{2023年7月21日(金)}
+\maketitle
+
+\begin{abstract}
+    光学式文字認識(OCR)機能は、オフィスオートメーション(OA)システム、工場自動化、オンライン教育、地図製作など、様々な適応シナリオで広く使用されている。
+    しかし、OCRは様々なテキストの出現と計算効率の要求のため、依然として困難なタスクとなっている。
+    本論文では、実用的な超軽量OCRシステム、PP-OCRを提案する。
+    PP-OCRの全体的なモデルサイズはほんのわずかであり、6622の漢字認識に3.5MB、63の英数字記号認識に2.8MBである。
+    私達は、モデルの性能を向上させる、またはモデルサイズを縮小させる方法を紹介する。
+    また、実データによるアブレーション実験も行う。
+    一方で、中国語と英語を認識するため、テキスト検出に9万7000枚、テキスト方向分類に60万枚、テキスト認識に1790万枚の画像を使用した事前学習済みモデルを公開している。
+    さらに、PP-OCRはフランス語、韓国語、日本語、ドイツ語を含む他の言語認識タスクでも確認済みである。
+    上記のモデルは全てオープンソース化されており、コードはGitHubリポジトリで公開されている。https://github.com/PaddlePaddle/PaddleOCR.
+\end{abstract}
+
+\section{はじめに}
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/Figure1.png}
+        \caption{PP-OCRシステムのいくつかの出力結果}
+        \label{Figure1}
+    \end{center}
+\end{figure}
+
+OCRは、図\ref{Figure1}に示すように画像中の文字を自動的に認識することを目的とする技術であり、その研究の歴史は長く、文書の電子化、本人認証、デジタル金融システム、自動車のナンバープレート認識など、幅広く応用されている。
+さらに、工場では、製品のテキスト情報を自動的に抽出することで、製品の管理がより便利となる。
+学生の紙媒体の課題やテスト用紙をOCRシステムで電子化することで、教師と学生のコミュニケーションがより効率的となる。
+また、OCRはストリートビュー画像のPOI(Point of Interest)のラベリングにも利用することができ、地図製作の効率化に貢献する。
+豊富な適応シナリオは、OCR技術に大きな商業的価値を付与する一方、多くの課題を抱えている。
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*{image/Figure2.png}
+        \caption{提案するPP-OCRのフレームワーク。図中のモデルサイズは中国語と英語の文字認識である。英数字記号認識において、テキスト認識のモデルサイズは1.6MBから0.9MBである。その他のモデルは同じサイズである。}
+        \label{Figure2}
+    \end{center}
+\end{figure}
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*{image/Figure3.png}
+        \caption{提案するPP-OCRのフレームワーク。図中のモデルサイズは中国語と英語の文字認識である。英数字記号認識において、テキスト認識のモデルサイズは1.6MBから0.9MBである。その他のモデルは同じサイズである。}
+        \label{Figure2}
+    \end{center}
+\end{figure}
+
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*{image/Figure4.png}
+        \caption{提案するPP-OCRのフレームワーク。図中のモデルサイズは中国語と英語の文字認識である。英数字記号認識において、テキスト認識のモデルサイズは1.6MBから0.9MBである。その他のモデルは同じサイズである。}
+        \label{Figure2}
+    \end{center}
+\end{figure}
+
+
+\emph{様々なテキストの出現}
+
+画像中のテキストは、一般にシーンテキストとドキュメントテキストの2つのカテゴリに分けることができる。
+シーンテキストは、図\ref{Figure3}に示すように、自然の風景にあるテキストを指し、通常は遠近、拡大縮小、歪曲、反射、フォント、多言語、ぼかし、照明などの要因によって劇的に変化する。
+図\ref{}に示すように、ドキュメントテキストは実用的なアプリケーションにおいて、より高頻度で起こる。
+高密度かつ長いテキストによって起こる様々な問題を解決する必要がある。
+そうでなければ、文書画像テキスト認識は、しばしば結果を構造化する必要性に伴い、新たに困難なタスクを導入することとなる。
+
+
+
+
+
+\section{おわりに}
+やっぱり{\bf いらすとや}のイラストはすばらしい。
+
+\begin{thebibliography}{99}
+    \bibitem{irasutoya} いらすとや, last access 2019.6.13 \url{https://www.irasutoya.com/}
+
+
+
+\end{thebibliography}
+
+\end{document}
