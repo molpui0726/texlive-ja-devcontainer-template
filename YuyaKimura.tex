@@ -5,6 +5,7 @@
 \usepackage{bmpsize}
 \usepackage{url}
 \usepackage{comment}
+\usepackage{amsmath}
 
 \def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
 \def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
@@ -14,12 +15,15 @@
 \begin{document}
 
 \title{\bf{\LARGE{Improving OCR quality of documents using generative adversarial networks} \\ \Large{敵対的生成ネットワークを用いた文書のOCR性能の向上}}}
-\author{
-    {EMILDA ZHANG \and VINCENT ARDYAN PUTRA \and GEDE PUTRA KUSUMA} \thanks{Computer Science Department, BINUS Graduate Program - Master of Computer Science, Bina Nusantara University, Jakarta, Indonesia, 11480} \\ 
-    Journal of Theoretical and Applied Information Technology, 30th April 2022, Vol.100 No.8 \\ 
-    訳: 木村 優哉
+\author{ {EMILDA ZHANG \and VINCENT ARDYAN PUTRA \and GEDE PUTRA KUSUMA} \\
+    Computer Science Department, \\ 
+    BINUS Graduate Program - Master of Computer Science, \\ 
+    Bina Nusantara University, Jakarta, Indonesia, 11480 \\
+    Journal of Theoretical and Applied Information Technology,\\
+    30th April 2022, Vol.100 No.8 \\
+    Pages 2424-2437 \\
 }
-\date{2023年7月21日(金)}
+\date{訳: 木村 優哉 \\ 2023年7月21日(金)}
 \maketitle
 
 \begin{abstract}
@@ -35,14 +39,6 @@
 \end{abstract}
 
 \section{はじめに}
-\begin{figure}[t]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/Figure1.png}
-        \caption{PP-OCRシステムのいくつかの出力結果}
-        \label{Figure1}
-    \end{center}
-\end{figure}
-
 e-KTP (Kartu Tanda Penduduk Elektronik) は、インドネシア人にIDカードとしてのみ使われているわけではない。
 特に行政、文書作成、借入や物件購入、銀行口座解説の過程など、生活の様々な場面でそのデータが利用されている。
 特にコンピュータビジョンの技術発展に伴い、e-KTPのデータを携帯電話のカメラで撮影した画像から抽出することが可能となった。
@@ -57,10 +53,10 @@ Tesseract-OCRアルゴリズムは、入力として良質で鮮明なスキャ�
 多くの研究で、OCR精度を高めるために入力画像に前処理を加えている。
 Bieniecki, Grabowski, Rozenberg [1]氏はデジタルカメラで撮った写真を使用し、画像の前処理に焦点を当てた手法を提案した。
 この手法は、OCRのための前処理技術として、テキスト領域の方向を調整するものである。
-これらの処理は、画像をグレースケール化、閾値処理を施し画像を二値化、エッジ検出として Sobel を使用、モルフォジー変換(膨張、縮小、オープニング処理、クロージング、トップハット変換)を適用し、大津法を適用して画像を二次元の強度関数で表現し、テキスト領域とセグメンテーションで構成される前処理を行う。
+これらの処理は、画像をグレースケール化、閾値処理を施し画像を二値化、エッジ検出として Sobel を使用、モルフォジー変換(膨張、縮小、オープニング処理、クロージング、トップハット変換)を適用し、大津の二値化を適用して画像を二次元の強度関数で表現し、テキスト領域とセグメンテーションで構成される前処理を行う。
 Akhter, Bhuiyan, Uddin [5]氏は、OCR処理においても画像強調と背景除去を用いている。
 
-この手法では、既に大津法によって二値化された画像を強調するために、非常にシンプルなスポット除去を使用している。
+この手法では、既に大津の二値化によって二値化された画像を強調するために、非常にシンプルなスポット除去を使用している。
 そのため、ノイズのある画像に対しては最適なOCR精度で出力することはできない。
 Soeseno と Liliana [6]氏 および Thanh と Trong [7]氏によって提案されたセグメンテーション方法に基づき、IDカード画像のOCR精度を向上させる手法もあるが、この手法は適切な角度で撮影された高品質な画像に限定されている。
 
@@ -73,8 +69,8 @@ Lat と Jawahar [9]氏、Su [10]氏ら、およびKong と Wang [11]氏は、GAN
 私達はGANを含む他の前処理を組み合わせて使用することで、より広いデータセットをカバーし、テキスト画像がスキャンされた文書画像だけでなく、複雑な背景が写るRAW画像にも適用可能であると考えている。
 したがって、この論文の貢献には、機械学習に基づいた前処理における画像品質向上のための手法が含まれている。
 この手法は、二値化、ぼかし除去、陰影除去を組み合わせた技術を使用している。
-ぼかし除去にはDeblurGANを使用し、損失関数としてワッサースタイン損失を利用した。
-　　　　　また、インドネシアのIDカードにおける Tesseract-OCR の出力を改善するための新たな後処理アルゴリズムである。
+ぼかし除去にはDeblurGANを使用し、損失関数としてワッサーシュタイン損失を利用した。
+また、インドネシアのIDカードにおける Tesseract-OCR の出力を改善するための新たな後処理アルゴリズムである。
 私達のデータセットは、携帯電話のカメラを使用して異なる照明状況と異なる環境でキャプチャされたインドネシアのIDカードである。
 
 \section{関連研究}
@@ -89,9 +85,9 @@ Bieniecki, Grabowski, Rozenberg [1]氏は、デジタルカメラの画像を使
 この手法では、OCRのための前処理技術として、画像のテキスト領域の方向を調節するものである。
 
 Akhter, Bhuiyan, Uddin [5]氏も、OCR処理において画像の強調と背景除去を用いた。
-この方法では、既に大津法によって二値化された画像を強調するために、非常にシンプルなスポット除去を使用している。
+この方法では、既に大津の二値化によって二値化された画像を強調するために、非常にシンプルなスポット除去を使用している。
 2019年には、Satyawan [4]氏らも、OCR処理において画像処理の組み合わせを適用した。
-これらの処理は、画像をグレースケール化、閾値処理を施し画像を二値化、エッジ検出としてSobelを使用、モルフォジー変換(膨張、縮小、オープニング処理、クロージング、トップハット変換)を適用し、大津法を適用して画像を二次元の強度関数で表現し、テキスト領域とセグメンテーションで構成される前処理を行う。
+これらの処理は、画像をグレースケール化、閾値処理を施し画像を二値化、エッジ検出としてSobelを使用、モルフォジー変換(膨張、縮小、オープニング処理、クロージング、トップハット変換)を適用し、大津の二値化を適用して画像を二次元の強度関数で表現し、テキスト領域とセグメンテーションで構成される前処理を行う。
 Thanh と Trong [7]氏は、ベトナムのIDカードを対象としたOCRに焦点を当てた手法を提案した。
 この手法では、画像構造を分析し、前処理を適用する。
 前処理には、傾きの調整、ノイズのフィルタリング、背景除去、カラーチャネルの分析、連結成分の分析、マスクラインの作成、表の構造分析、および二値画像が含まれている。
@@ -124,33 +120,131 @@ Lat と Jawahar [9]氏と同様に、Su [10]氏らもテキスト画像の解像
 前処理の段階では、入力画像の品質を向上させるために、様々な前処理技術の組み合わせを適用する。
 主に適用する3つの技術は、ぼかし除去、陰影除去、二値化である。
 
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/Figure1.png}
+        \caption{デブラー処理前と処理後: (a)デブラー処理前 (b)デブラー処理後}
+        \label{fig:Figure1}
+    \end{center}
+\end{figure}
+
 過去数年間、画像品質を向上させるための機械学習手法である敵対的生成ネットワーク (GAN) [8] による DeblurGAN と呼ばれるぼかし除去手法に関する Kupyn, Budzan, Mykhailych Mishkin, Matas [16]氏による手法に興味を持った。
 DeblurGAN は、モーションブラーのための End-to-End の学習手法であり、条件付きGAN (cGAN) とコンテンツ損失に基づいている。
+この手法では、WGAN-GP [17] を勾配ペナルティと知覚損失によって、評価(WGAN-GPの識別器)関数として使用している。
+WGAN-GPを使用することで、学習過程がより安定する。
+DeblurGAN の識別器は、ストライド 1/2 の2つの畳み込みブロック、9つの残差ブロック (ResBlocks)、2つの転置畳み込みブロックで構成されている。
+各残差ブロックには、畳み込み層、インスタンス正規化層、ReLUアクティベーションを含んでいる。
+本論文では、DeblurGAN を利用してぼかし除去を行っており、\ref{sec:Experiment}で詳細に説明する。
+筆者から提供された事前学習済みモデルを使用し、損失関数として WGAN[17] のワッサーシュタイン損失を用いた。
+データセットに DeblurGAN を適用した結果を図\ref{fig:Figure1}に示す。
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/Figure2.png}
+        \caption{デブラー処理前と陰影除去後: (a)デブラー処理前 (b)陰影除去後}
+        \label{fig:Figure2}
+    \end{center}
+\end{figure}
+
+本論文にて使用したデータセットは、携帯電話のカメラで撮影されており、照明条件が異なるため、画像には多くの反射が含まれている。
+このような画像の品質を向上させるため、画像のぼかし除去を行った後に陰影除去を適用した。
+まず、画像のチャネルをそれぞれ個々の平面に分割し、平面に対して膨張とメディアンフィルタによるノイズ除去を施し、画像を平滑化する。
+その後、各平面での欠如を計算するため、255から平面とぼかし画像の絶対値を減算する。
+このステップの最後に正規化を行い、配列に追加して、全平面を1つの画像として結合する(図\ref{fig:Figure2})
+
+最後に、二値化では、3つの異なる閾値処理手法を使用した。
+TRUNC閾値処理、TOZERO 閾値処理、 A\&N [12]、Akhter [5]ら、Satyawan [4]らによって示された、大津の二値化を行った。
+これらは画像の二値化に、より良い結果を出力するとされている。
+TRUNC閾値処理では、画素値が閾値以下の値は変更されず、閾値以上の値は閾値の値に設定され、以下のように表される。
+
+\begin{equation}
+    \text{dst(x,y)} =
+    \left\{
+    \begin{array}{ll}
+        \text{maxval}   & \text{if scr(x,y)} < \text{thresh} \\
+        \text{scr(x,y)} & \text{otherwise}
+    \end{array}
+    \right.
+\end{equation}
+
+TOZERO閾値処理では、画素値が閾値以下の値は0に設定し、閾値以上の値は変更されず、以下のように表される。
+
+\begin{equation}
+    \text{dst(x,y)} =
+    \left\{
+    \begin{array}{ll}
+        \text{src(x,y)} & \text{if scr(x,y)} < \text{thresh} \\
+        0               & \text{otherwise}
+    \end{array}
+    \right.
+\end{equation}
+
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/Figure3.png}
+        \caption{異なる閾値処理による二値化: (a)陰影除去後 (b)TOZERO閾値処理 (c)大津の二値化}
+        \label{fig:Figure3}
+    \end{center}
+\end{figure}
+
+大津の二値化は、画像の二値化において、適応的閾値処理となっている。
+画素値が0から255までの範囲で、大津の二値化は最適な閾値を見つけるため、クラス間分散(またはクラス内分散)を計算して評価する。
+画素を二値化した結果は、図\ref{fig:Figure3}で示されている。
+
+\begin{table*}[hbtp]
+    \centering
+    \small
+    \captinon{画像処理の結果}
+    \scalebox{1.0}[0.8]{
+        \begin{tabular}{|l|l|l|}
+            \hline
+                                           & Dataset 1                      & Dataset 2                      \\ 
+            \hline
+            \begin{tabular}{@{}l@{}}Ground\\Truth\end{tabular}  & \begin{tabular}{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA BARAT", \\~"1": "KOTA BANDUNG",\\~"NIK": "3273041508720012", \\~"nama": "NANANG KOSIM", \\~"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\~"jenis\_kelamin": "LAKI-LAKI",\\~"gol\_darah": "-", \\~"alamat": "JL.KOPO\\GG.PANYILEUKAN", \\~"rt\_rw": "007/005", \\~"kel\_desa": "KOPO", \\~"kecamatan": "BOJONGLOA\\KALER", \\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN", \\~"pekerjaan": "WIRASWASTA", \\~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR HIDUP" \\~\}\end{tabular}  & \begin{tabular}{p{6cm}}{@{}l@{}}\{ \\~"0": "PROVINSI JAWA BARAT", \\~"1": "KOTA BANDUNG", \\~"NIK": "3273041504780013", \\~"nama": "ADI ROHMAWAN", \\~"tempat\_tanggal\_lahir": "SRAGEN, 15-\\04-1978", \\~"jenis\_kelamin": "LAKI-LAKI", \\~"gol\_darah": "-", \\~"alamat": "JL.KOPO GG.LAPANG", \\~"rt\_rw": "009/004", \\~"kel\_desa": "KOPO", \\~"kecamatan": "BOJONGLOA KALER", \\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN",\\~"pekerjaan": "WIRASWASTA", \\~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR HIDUP"\\\}\end{tabular}  \\ 
+            \hline
+            \begin{tabular}{@{}l@{}}OCR Output\\using\\Pytesseract\end{tabular} & \begin{tabular}{p{6cm}}{@{}l@{}}PROVINSI JAWA BARAT\\KOTA BANDUNG\\NIK : 32730415087?20012 \\Nama INANANG KOSIM\\TempatTgi Lahir : BANDUNG, 15-08-\\1972\\Jenis kelamin : LAKI-LAKI Gol. Darah\\:-\\Alamat : JL.KOPO\\GG.PANYILEUKAN\\RTRW :007/005\\KeVDesa :KOPO\\Kecamatan : BOJONGLOA KALER\\Agama : ISLAM\\Status Perkawinan: KAWIN\\Pekerjaan :WIRASWASTA\\Kewarganegaraan: WNI\\Berlaku Hingga: SEUMUR HIDUP~ ~~\end{tabular} & \begin{tabular}{p{6cm}}{@{}l@{}}PROVINSI JAWA RAPAT\\KOTA BANDUNG\\NIK : 3073041508 ?80053\\Nam3 ADI ROHMAWAN\\Tempat yisne SRAGEN, 1S Oa 1573\\us Kemasan AKG LAKI Gor Daan\\Mam 1 KOPO GG LAPANG\\87 02006\\KecTarsa OPO\\meramatn — BOJONGIOAXAIFR\\Dalan ISLAM\\Sisam Penaunnan KAWIN\\Senarman .WARASWASTA\\Kema ganegaraso. WNI\\Berak Hingga SEUMUR HIDUP\\be .~ ~\end{tabular} \\ 
+            \hline
+            \begin{tabular}{@{}l@{}}Key-Value\\Pairs\\Extracted\end{tabular} & \begin{tabular}{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA BARAT",a\\~"1": "KOTA BANDUNG",\\~"NIK": "3273041508720012",\\~"nama": "INANANG KOSIM",~ ~"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\~"jenis\_kelamin": "LAKI-LAKI",\\~"gol\_darah": "-",\\~"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\~"rt\_rw": "007/005",\\~"kel\_desa": "KOPO",\\~"kecamatan": "BOJONGLOA\\~KALER",  "agama": "ISLAM",~ ~"status\_perkawinan": "KAWIN",\\~"pekerjaan": "WIRASWASTA",~ ~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR \\~HIDUP" \\\}\end{tabular} & \begin{tabular}{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA RAPAT",\\~"1": "KOTA BANDUNG",\\~"NIK": "307304150880053",\\~"nama": "N ADI ROHMAWAN", \\~"tempat\_tanggal\_lahir": "Tempat yisne SRAGEN, 1S Oa 1573",\\~"jenis\_kelamin": "LAKI-LAKI", \\~"gol\_darah": "-",\\~"alamat": "M 1 KOPO GG LAPANG",\\~"rt\_rw": "87 02006",\\~"kel\_desa": "KT OPO",\\~"kecamatan": "BOJONGIOAXAIFR",\\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN", \\~"pekerjaan": "S WARASWASTA",~ ~"kewarganegaraan": "WNI",~ ~"berlaku\_hingga": "SEUMUR HIDUP"\\\}~ ~\end{tabular} \\
+            \hline
+        \end{tabular}
+    }
+    \label{tb:Table1}
+\end{table*}
+
+その後、画像は Pytesseract (Python Tesseract バージョン 5.0.0 アルファ) を使用してテキストを抽出する。
+このテキストは表\ref{tb:Table1}にて表されている。
+Pytesseract (Python Tesseract) は、Pythonを使用してOCRを実行するためのツールである。
+これは、オープンソースであるOCRエンジン Tesseract-OCR のラッパーであり、もとは1985年に Hewlett Packard によって開発された[3]。
+Tesseract-OCR は現在、Google によって Apache 2.0 ライセンスの下でメンテナンスされており[3]、最も正確かつ広く使用されているOCRエンジンの1つとされている[18]。
+
+Pytesseract で結果を取得した後、抽出結果を行ごとに分割し、正規表現としてキー値のペアを抽出する。
+限られた種類のコンテンツを含む領域(例:"Agama", "Jenis Kelamin", "Golongan Darah", "Kewarganegaraan", "Status", "Berlaku Hingga") については、Regex.search を使用した。
+Regex.serach が一致する値を見つけられなかった場合、文字列をコロンで分割する。
+また、同様に Tesseract によって検出された他の領域のキー値もコロンで分割する。
+コロンが含まれていない場合、Regex に一致する値で文字列を分割し、最後の配列を取得する。
+Regex が失敗し、文字列にコロンが含まれていない場合、最初に検出した文字列を配列のインデックスに基づいて返す。
+その後、各領域の値を処理し、余分なスペース、小文字の文字、記号、句読点を削除するが、": . ," はIDカードのコンテンツの一部であるため、削除しない。
+例えば、"NIK" 領域の値は数字のみを含むようにフィルタリングし、"Tempet / Tgl Lahir" 領域の値は余分なスペース、小文字の文字、記号、句読点を削除するが、この領域はフォーマットの一部であるため、": , -" は保持しておく、といった。
+結果の例は、表\ref{tb:Table1} にある。
+
+
+\section{実験}\label{sec:Experiment}
+a
 
 
 
-\emph{様々なテキストの出現}
+\section{訳者の感想}
+開発している段階で、最も懸念のある文字抽出に関する論文を選んだ。
+文字抽出の精度が悪い場合、その後のラベル付けにも大きな影響が及ぶことと、入力領域の抽出は比較的うまくいっていること、Tesseract-OCR と大津の二値化による複雑な入力画像に対する文字抽出を行っていることが本論文を選んだ理由である。
 
-画像中のテキストは、一般にシーンテキストとドキュメントテキストの2つのカテゴリに分けることができる。
-シーンテキストは、図\ref{Figure3}に示すように、自然の風景にあるテキストを指し、通常は遠近、拡大縮小、歪曲、反射、フォント、多言語、ぼかし、照明などの要因によって劇的に変化する。
-図\ref{}に示すように、ドキュメントテキストは実用的なアプリケーションにおいて、より高頻度で起こる。
-高密度かつ長いテキストによって起こる様々な問題を解決する必要がある。
-そうでなければ、文書画像テキスト認識は、しばしば結果を構造化する必要性に伴い、新たに困難なタスクを導入することとなる。
-
-
-
-
-
-
-
-\section{おわりに}
-やっぱり{\bf いらすとや}のイラストはすばらしい。
+\emph{参考文献}
 
 \begin{thebibliography}{99}
     \bibitem{irasutoya} いらすとや, last access 2019.6.13 \url{https://www.irasutoya.com/}
-
-
-
+    
+    
+    
 \end{thebibliography}
 
 \end{document}
