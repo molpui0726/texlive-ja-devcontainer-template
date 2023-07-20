@@ -27,7 +27,7 @@
 \maketitle
 
 \begin{abstract}
-    e-KTP (Kartu Tanda Penduduk Elektronik)は、インドネシア人のための国民IDカードであり、身分証明書としてだけでなく、行政や財務関連事など、生活のさまざまな場面で広く利用されている。
+    e-KTP (Kartu Tanda Penduduk Elektronik)は、インドネシア人のための国民IDカードであり、身分証明書としてだけでなく、行政や財務関連のことなど、生活の様々な場面で広く利用されている。
     セグメンテーションとテキスト抽出を用いる従来の方法で、IDカードの領域から情報を検出することができる。
     しかし、これらの方法は、高品質である適切なキャプチャ画像を必要とする。
     実際、ほとんどのIDカード画像は携帯電話のカメラで撮影されており、常に高品質な画像を生成できるわけではない。
@@ -38,12 +38,15 @@
     本手法を用いることにより、平均文字誤り率は18.82\%を達成し、前処理なしの38.13\%に比べて改善した。
 \end{abstract}
 
+
+
 \section{はじめに}
+
 e-KTP (Kartu Tanda Penduduk Elektronik) は、インドネシア人にIDカードとしてのみ使われているわけではない。
 特に行政、文書作成、借入や物件購入、銀行口座解説の過程など、生活の様々な場面でそのデータが利用されている。
 特にコンピュータビジョンの技術発展に伴い、e-KTPのデータを携帯電話のカメラで撮影した画像から抽出することが可能となった。
 
-現在の技術を用いた認識処理には、低照度である、霞んでいる、雨が降っているといった屋外環境での撮影や、画像の向き、撮影時の手の映り込みがある画像など、いくつかの障害がある。
+現在の技術を用いた認識処理には、低照度である、霞んでいる、雨が降っているといった屋外環境での撮影や、画像の向き、撮影時の手の影の反射がある画像など、いくつかの障害がある。
 この処理を最適化するため、入力に対して優れた前処理[1]を適用し、テキスト認識出力に対して後処理[2]を適用するという2つの処理を実行する。
 
 テキスト認識処理は Tesseract-OCR による Optical Character Recognition (OCR, 光学式文字認識) アルゴリズムを使用している。
@@ -60,7 +63,7 @@ Akhter, Bhuiyan, Uddin [5]氏は、OCR処理においても画像強調と背景
 そのため、ノイズのある画像に対しては最適なOCR精度で出力することはできない。
 Soeseno と Liliana [6]氏 および Thanh と Trong [7]氏によって提案されたセグメンテーション方法に基づき、IDカード画像のOCR精度を向上させる手法もあるが、この手法は適切な角度で撮影された高品質な画像に限定されている。
 
-lan らは、近年の深層学習における重要な課題となっている画像の強調に関して、Generative Adversarial Network(GAN, 敵対的生成ネットワーク)と呼ばれるフレームワークを紹介した[8]。
+lan 氏らは、近年の深層学習における重要な課題となっている画像の強調に関して、Generative Adversarial Network(GAN, 敵対的生成ネットワーク)と呼ばれるフレームワークを紹介した[8]。
 Lat と Jawahar [9]氏、Su [10]氏ら、およびKong と Wang [11]氏は、GANベースの画像前処理を適用し Tesseract-OCR の精度を向上させる手法を提案した。
 これにより、白い背景をもつ文書テキスト画像に解像度強化を行う。
 ただし、この方法ではIDカードや携帯電話のカメラで撮影された画像など、より複雑なテキスト画像のデータセットには適していない。
@@ -73,12 +76,15 @@ Lat と Jawahar [9]氏、Su [10]氏ら、およびKong と Wang [11]氏は、GAN
 また、インドネシアのIDカードにおける Tesseract-OCR の出力を改善するための新たな後処理アルゴリズムである。
 私達のデータセットは、携帯電話のカメラを使用して異なる照明状況と異なる環境でキャプチャされたインドネシアのIDカードである。
 
+
+
 \section{関連研究}
+
 過去数年間、OCRを使用したテキスト画像認識は、研究者にとって非常に重要な分野となっている。
 Tesseract, ABBYY FineReader, HANWANG など、どのOCRツールを使用しているかどうかにかかわらず、OCRの精度を向上させるため、多くの手法が提案されてきた。
 A, N [12]氏は、ローカルな明るさとコントラストの調整方法によって画像の前処理を行う手法を提案した。
 これにより、明るさの変動や画像の不規則な照度分布を効果的に扱うことが可能である。
-また、最適化されたグレースケール変換アルゴリズムを利用し、ドキュメント画像をグレースケールに変換する。
+また、最適化されたグレースケール変換アルゴリズムを活用し、ドキュメント画像をグレースケールに変換する。
 最後に、アンシャープマスキングによって生成されたグレースケール画像の有用な情報を鮮鋭化する。
 最適なグローバル二値化手法も使用されており、OCR認識のための最終的なドキュメント画像の準備を行う。
 Bieniecki, Grabowski, Rozenberg [1]氏は、デジタルカメラの画像を使用し、画像の前処理に焦点を当てた手法も提案した。
@@ -104,7 +110,7 @@ Vamvakas, Gatos, Stamatopoulos, Perantonis [14]氏は、歴史的な印刷物ま
 
 Llobet, Navarro-Cerdan, Perez-Cortes, Arlandis [2]氏は、後処理の手法も提案した。
 Llobet [2]氏らは、OCR処理の前にある画像の前処理に焦点を当てるのではなく、OCRの結果の後処理に焦点を当てた。
-事後クラス確率のシーケンスを利用して、WFST (Weighted Finite-State Transducers, 重み付き有限状態トランスデューサ) を構築し、その後、エラーモデルと言語モデルの独立したWFSTと組み合わせた。
+事後クラス確率のベクトル列を利用して、WFST (Weighted Finite-State Transducers, 重み付き有限状態トランスデューサ) を構築し、その後、エラーモデルと言語モデルの独立したWFSTと組み合わせた。
 Lat と Jawahar [9]氏によって、敵対的生成ネットワーク (GAN) に基づいた手法も提案された。
 ドキュメント画像に焦点を当てた Lat と Jawahar 氏は、Super-Resolution Generative Adversarial Network (SRGAN, 超解像敵対的生成ネットワーク) に基づいて生成された超解像度画像を前処理として使用し、OCR精度を向上させる。
 Lat と Jawahar [9]氏と同様に、Su [10]氏らもテキスト画像の解像度を向上させるための手法を提案した。
@@ -115,7 +121,10 @@ Lat と Jawahar [9]氏と同様に、Su [10]氏らもテキスト画像の解像
 したがって、GAN 手法を含む前処理技術の組み合わせを利用し、画像の品質を向上させたいと考えている。
 最後に、シンプルな後処理技術を使用して、インドネシアのIDカードの解析を対象とし、Tesseract-OCR の精度向上のために正規表現を行う。
 
+
+
 \section{提案手法}
+
 私達の提案は、前処理、Tesseract を使用した文字認識、後処理の三段階で構成されている。
 前処理の段階では、入力画像の品質を向上させるために、様々な前処理技術の組み合わせを適用する。
 主に適用する3つの技術は、ぼかし除去、陰影除去、二値化である。
@@ -123,7 +132,7 @@ Lat と Jawahar [9]氏と同様に、Su [10]氏らもテキスト画像の解像
 \begin{figure}[t]
     \begin{center}
         \includegraphics*[width=7cm]{image/Figure1.png}
-        \caption{デブラー処理前と処理後: (a)デブラー処理前 (b)デブラー処理後}
+        \caption{ぼかし除去前と処理後: (a)ぼかし除去前 (b)ぼかし除去後}
         \label{fig:Figure1}
     \end{center}
 \end{figure}
@@ -141,7 +150,7 @@ DeblurGAN の識別器は、ストライド 1/2 の2つの畳み込みブロッ�
 \begin{figure}[t]
     \begin{center}
         \includegraphics*[width=7cm]{image/Figure2.png}
-        \caption{デブラー処理前と陰影除去後: (a)デブラー処理前 (b)陰影除去後}
+        \caption{ぼかし除去前と陰影除去後: (a)ぼかし除去前 (b)陰影除去後}
         \label{fig:Figure2}
     \end{center}
 \end{figure}
@@ -152,9 +161,9 @@ DeblurGAN の識別器は、ストライド 1/2 の2つの畳み込みブロッ�
 その後、各平面での欠如を計算するため、255から平面とぼかし画像の絶対値を減算する。
 このステップの最後に正規化を行い、配列に追加して、全平面を1つの画像として結合する(図\ref{fig:Figure2})
 
-最後に、二値化では、3つの異なる閾値処理手法を使用した。
-TRUNC閾値処理、TOZERO 閾値処理、 A\&N [12]、Akhter [5]ら、Satyawan [4]らによって示された、大津の二値化を行った。
-これらは画像の二値化に、より良い結果を出力するとされている。
+最後に、二値化では、異なる3つの閾値処理手法を使用した。
+TRUNC閾値処理、TOZERO 閾値処理、 A\&N [12]氏、Akhter [5]氏ら、Satyawan [4]氏らによって示された、大津の二値化を行った。
+これらは画像の二値化において、より良い結果を出力するとされている。
 TRUNC閾値処理では、画素値が閾値以下の値は変更されず、閾値以上の値は閾値の値に設定され、以下のように表される。
 
 \begin{equation}
@@ -179,7 +188,6 @@ TOZERO閾値処理では、画素値が閾値以下の値は0に設定し、閾�
     \right.
 \end{equation}
 
-
 \begin{figure}[t]
     \begin{center}
         \includegraphics*[width=7cm]{image/Figure3.png}
@@ -193,23 +201,23 @@ TOZERO閾値処理では、画素値が閾値以下の値は0に設定し、閾�
 画素を二値化した結果は、図\ref{fig:Figure3}で示されている。
 
 \begin{table*}[hbtp]
+    \caption{画像処理の結果}
+    \label{tb:Table1}
     \centering
     \small
-    \captinon{画像処理の結果}
-    \scalebox{1.0}[0.8]{
+    \scalebox{1.0}[0.80]{
         \begin{tabular}{|l|l|l|}
             \hline
-                                           & Dataset 1                      & Dataset 2                      \\ 
+                                           & \multicolumn{1}{c|}{\textbf{Dataset 1}} & \multicolumn{1}{c|}{\textbf{Dataset 2}} \\ 
             \hline
-            \begin{tabular}{@{}l@{}}Ground\\Truth\end{tabular}  & \begin{tabular}{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA BARAT", \\~"1": "KOTA BANDUNG",\\~"NIK": "3273041508720012", \\~"nama": "NANANG KOSIM", \\~"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\~"jenis\_kelamin": "LAKI-LAKI",\\~"gol\_darah": "-", \\~"alamat": "JL.KOPO\\GG.PANYILEUKAN", \\~"rt\_rw": "007/005", \\~"kel\_desa": "KOPO", \\~"kecamatan": "BOJONGLOA\\KALER", \\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN", \\~"pekerjaan": "WIRASWASTA", \\~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR HIDUP" \\~\}\end{tabular}  & \begin{tabular}{p{6cm}}{@{}l@{}}\{ \\~"0": "PROVINSI JAWA BARAT", \\~"1": "KOTA BANDUNG", \\~"NIK": "3273041504780013", \\~"nama": "ADI ROHMAWAN", \\~"tempat\_tanggal\_lahir": "SRAGEN, 15-\\04-1978", \\~"jenis\_kelamin": "LAKI-LAKI", \\~"gol\_darah": "-", \\~"alamat": "JL.KOPO GG.LAPANG", \\~"rt\_rw": "009/004", \\~"kel\_desa": "KOPO", \\~"kecamatan": "BOJONGLOA KALER", \\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN",\\~"pekerjaan": "WIRASWASTA", \\~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR HIDUP"\\\}\end{tabular}  \\ 
+            \begin{tabular}[c]{@{}l@{}}\textbf{Ground}\\\textbf{Truth}\end{tabular}  & \begin{tabular}[c]{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA BARAT", \\~"1": "KOTA BANDUNG",\\~"NIK": "3273041508720012", \\~"nama": "NANANG KOSIM", \\~"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\~"jenis\_kelamin": "LAKI-LAKI",\\~"gol\_darah": "-", \\~"alamat": "JL.KOPO\\GG.PANYILEUKAN", \\~"rt\_rw": "007/005", \\~"kel\_desa": "KOPO", \\~"kecamatan": "BOJONGLOA\\KALER", \\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN", \\~"pekerjaan": "WIRASWASTA", \\~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR HIDUP" \\~\}\end{tabular}           & \begin{tabular}[c]{p{6cm}}{@{}l@{}}\{ \\~"0": "PROVINSI JAWA BARAT", \\~"1": "KOTA BANDUNG", \\~"NIK": "3273041504780013", \\~"nama": "ADI ROHMAWAN", \\~"tempat\_tanggal\_lahir": "SRAGEN, 15-\\04-1978", \\~"jenis\_kelamin": "LAKI-LAKI", \\~"gol\_darah": "-", \\~"alamat": "JL.KOPO GG.LAPANG", \\~"rt\_rw": "009/004", \\~"kel\_desa": "KOPO", \\~"kecamatan": "BOJONGLOA KALER", \\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN",\\~"pekerjaan": "WIRASWASTA", \\~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR HIDUP"\\\}\end{tabular}           \\ 
             \hline
-            \begin{tabular}{@{}l@{}}OCR Output\\using\\Pytesseract\end{tabular} & \begin{tabular}{p{6cm}}{@{}l@{}}PROVINSI JAWA BARAT\\KOTA BANDUNG\\NIK : 32730415087?20012 \\Nama INANANG KOSIM\\TempatTgi Lahir : BANDUNG, 15-08-\\1972\\Jenis kelamin : LAKI-LAKI Gol. Darah\\:-\\Alamat : JL.KOPO\\GG.PANYILEUKAN\\RTRW :007/005\\KeVDesa :KOPO\\Kecamatan : BOJONGLOA KALER\\Agama : ISLAM\\Status Perkawinan: KAWIN\\Pekerjaan :WIRASWASTA\\Kewarganegaraan: WNI\\Berlaku Hingga: SEUMUR HIDUP~ ~~\end{tabular} & \begin{tabular}{p{6cm}}{@{}l@{}}PROVINSI JAWA RAPAT\\KOTA BANDUNG\\NIK : 3073041508 ?80053\\Nam3 ADI ROHMAWAN\\Tempat yisne SRAGEN, 1S Oa 1573\\us Kemasan AKG LAKI Gor Daan\\Mam 1 KOPO GG LAPANG\\87 02006\\KecTarsa OPO\\meramatn — BOJONGIOAXAIFR\\Dalan ISLAM\\Sisam Penaunnan KAWIN\\Senarman .WARASWASTA\\Kema ganegaraso. WNI\\Berak Hingga SEUMUR HIDUP\\be .~ ~\end{tabular} \\ 
+            \begin{tabular}[c]{@{}l@{}}\textbf{OCR Output}\\\textbf{using}\\\textbf{Pytesseract}\end{tabular} & \begin{tabular}[c]{p{6cm}}{@{}l@{}}PROVINSI JAWA BARAT\\KOTA BANDUNG\\NIK : 32730415087?20012 \\Nama INANANG KOSIM\\TempatTgi Lahir : BANDUNG, 15-08-\\1972\\Jenis kelamin : LAKI-LAKI Gol. Darah\\:-\\Alamat : JL.KOPO\\GG.PANYILEUKAN\\RTRW :007/005\\KeVDesa :KOPO\\Kecamatan : BOJONGLOA KALER\\Agama : ISLAM\\Status Perkawinan: KAWIN\\Pekerjaan :WIRASWASTA\\Kewarganegaraan: WNI\\Berlaku Hingga: SEUMUR HIDUP~ ~~\end{tabular}          & \begin{tabular}[c]{p{6cm}}{@{}l@{}}PROVINSI JAWA RAPAT\\KOTA BANDUNG\\NIK : 3073041508 ?80053\\Nam3 ADI ROHMAWAN\\Tempat yisne SRAGEN, 1S Oa 1573\\us Kemasan AKG LAKI Gor Daan\\Mam 1 KOPO GG LAPANG\\87 02006\\KecTarsa OPO\\meramatn — BOJONGIOAXAIFR\\Dalan ISLAM\\Sisam Penaunnan KAWIN\\Senarman .WARASWASTA\\Kema ganegaraso. WNI\\Berak Hingga SEUMUR HIDUP\\be .~ ~\end{tabular}          \\ 
             \hline
-            \begin{tabular}{@{}l@{}}Key-Value\\Pairs\\Extracted\end{tabular} & \begin{tabular}{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA BARAT",a\\~"1": "KOTA BANDUNG",\\~"NIK": "3273041508720012",\\~"nama": "INANANG KOSIM",~ ~"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\~"jenis\_kelamin": "LAKI-LAKI",\\~"gol\_darah": "-",\\~"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\~"rt\_rw": "007/005",\\~"kel\_desa": "KOPO",\\~"kecamatan": "BOJONGLOA\\~KALER",  "agama": "ISLAM",~ ~"status\_perkawinan": "KAWIN",\\~"pekerjaan": "WIRASWASTA",~ ~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR \\~HIDUP" \\\}\end{tabular} & \begin{tabular}{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA RAPAT",\\~"1": "KOTA BANDUNG",\\~"NIK": "307304150880053",\\~"nama": "N ADI ROHMAWAN", \\~"tempat\_tanggal\_lahir": "Tempat yisne SRAGEN, 1S Oa 1573",\\~"jenis\_kelamin": "LAKI-LAKI", \\~"gol\_darah": "-",\\~"alamat": "M 1 KOPO GG LAPANG",\\~"rt\_rw": "87 02006",\\~"kel\_desa": "KT OPO",\\~"kecamatan": "BOJONGIOAXAIFR",\\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN", \\~"pekerjaan": "S WARASWASTA",~ ~"kewarganegaraan": "WNI",~ ~"berlaku\_hingga": "SEUMUR HIDUP"\\\}~ ~\end{tabular} \\
+            \begin{tabular}[c]{@{}l@{}}\textbf{Key-Value}\\\textbf{Pairs}\\\textbf{Extracted}\end{tabular} & \begin{tabular}[c]{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA BARAT",a\\~"1": "KOTA BANDUNG",\\~"NIK": "3273041508720012",\\~"nama": "INANANG KOSIM",~ ~"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\~"jenis\_kelamin": "LAKI-LAKI",\\~"gol\_darah": "-",\\~"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\~"rt\_rw": "007/005",\\~"kel\_desa": "KOPO",\\~"kecamatan": "BOJONGLOA\\~KALER",  "agama": "ISLAM",~ ~"status\_perkawinan": "KAWIN",\\~"pekerjaan": "WIRASWASTA",~ ~"kewarganegaraan": "WNI", \\~"berlaku\_hingga": "SEUMUR \\~HIDUP" \\\}\end{tabular}          & \begin{tabular}[c]{p{6cm}}{@{}l@{}}\{\\~"0": "PROVINSI JAWA RAPAT",\\~"1": "KOTA BANDUNG",\\~"NIK": "307304150880053",\\~"nama": "N ADI ROHMAWAN", \\~"tempat\_tanggal\_lahir": "Tempat yisne SRAGEN, 1S Oa 1573",\\~"jenis\_kelamin": "LAKI-LAKI", \\~"gol\_darah": "-",\\~"alamat": "M 1 KOPO GG LAPANG",\\~"rt\_rw": "87 02006",\\~"kel\_desa": "KT OPO",\\~"kecamatan": "BOJONGIOAXAIFR",\\~"agama": "ISLAM",\\~"status\_perkawinan": "KAWIN", \\~"pekerjaan": "S WARASWASTA",~ ~"kewarganegaraan": "WNI",~ ~"berlaku\_hingga": "SEUMUR HIDUP"\\\}~ ~\end{tabular}          \\
             \hline
         \end{tabular}
     }
-    \label{tb:Table1}
 \end{table*}
 
 その後、画像は Pytesseract (Python Tesseract バージョン 5.0.0 アルファ) を使用してテキストを抽出する。
@@ -229,14 +237,180 @@ Regex が失敗し、文字列にコロンが含まれていない場合、最�
 結果の例は、表\ref{tb:Table1} にある。
 
 
+
 \section{実験}\label{sec:Experiment}
-a
+
+
+\subsection{データセット}
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/Figure4.png}
+        \caption{異なる条件のデータセット: (a)正面からの視点でない (b)手の影の反射がある (c)手の写りこみがある (d)テキスト領域に光の反射がある (e)影の反射 (f)画像にぼやけがある}
+        \label{fig:Figure4}
+    \end{center}
+\end{figure}
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/Figure5.png}
+        \caption{画像処理前の結果: (a)元画像 (b)該当箇所のマスキング後 (c)二値画像 (d)陰影除去、二値化 (e)ぼかし除去(DeblurGAN)、二値化 (f)ぼかし除去(DeblurGAN)、陰影除去、二値化}
+        \label{fig:Figure5}
+    \end{center}
+\end{figure}
+
+本論文で使用したデータセットには、100枚のインドネシアのIDカードが含まれており、これらは携帯電話のカメラで撮影され、実験の目的でのみ使用した。
+図\ref{fig:Figure4}に示すように、データセットの画像にはIDカードだけではない(顔、手の影の反射、ブロブ、異なる照明条件などを含む)。
+そのため、これらの画像を$\text{600} \times \text{400}$に整形し、IDカードのみを含むように調整した。
+次に、画像から検出された主要な色を使用し、IDカードの右側にある証明写真、都市名、日付、署名欄をマスキングした。(図\ref{Figure5}(b))
+このマスキング処理は、Tesseract-OCR の結果を改善するために使用しており、必要な情報であるテキストのみを検出できるようにした。
+
+
+\subsection{実験計画}
+
+
+\begin{table*}[htbp]
+    \centering
+    \caption{前処理技術の組み合わせ}
+    \label{tb:Table2}
+    \begin{tabular}{|l|l|}
+        \hline
+        \multicolumn{1}{|c|}{\textbf{Technique}} & \multicolumn{1}{c|}{\textbf{Description}} \\ 
+        \hline
+        \textit{Original}                        & \begin{tabular}[c]{@{}l@{}}We rectified the input image into 600x400 and masked it in the area of the right \\ side of Indonesian ID card which contains profile picture, city name, date, and \\ signature into blue color.\end{tabular}            \\ 
+        \hline
+        \textit{Binarization}                    & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we binarized it. We tried 3 different thresholding, which are TRUNC,\\TOZERO, and OTSU.\end{tabular}            \\ 
+        \hline
+        \begin{tabular}[c]{@{}l@{}}\textit{Shadow removal}\\+ \textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied shadow removal and binarized it using 3 different approaches\\(TRUNC, TOZERO, and OTSU).\end{tabular}            \\ 
+        \hline
+        \begin{tabular}[c]{@{}l@{}}\textit{Deblurring} +\\\textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied DeblurGAN [16] and binarized it using 3 different approaches\\(TRUNC, TOZERO, and OTSU).~ ~~\end{tabular}            \\ 
+        \hline
+        \begin{tabular}[c]{@{}l@{}}\textit{Deblurring} +\\\textit{Shadow removal}\\+ \textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied DeblurGAN [16], shadow removal, and binarized it using 3 \\different approaches (TRUNC, TOZERO, and OTSU).~ ~~\end{tabular}            \\
+        \hline
+    \end{tabular}
+\end{table*}
+
+OCR処理を施す前に、入力画像に対して5つの異なる前処理技術の組み合わせを適用し、各組合せを評価した。
+前処理の結果は、図\ref{Figure5}で示している。
+全ての二値化処理には、TRUNC閾値処理、TOZERO閾値処理、大津の二値化の3つの異なる閾値処理を使用した。
+TRUNC閾値処理では、100から250の範囲で閾値処理を適用した。
+その結果、画像ごとに最適な閾値として、200と215が示された。
+TOZERO閾値処理では、127を閾値としたところ、最良の結果が示された。
+前処理技術の詳細な手順は、表\ref{tb:Table2}に示している。
+
+次に、Tesseract-OCR で画像処理を行った後に、後処理アルゴリズムを適用した。
+後処理の結果は、テキストファイルにエクスポートされる。
+最後に、各画像の CER(Characters Error Rate, 文字誤り率) を計測した。
+これは、抽出された出力値をその正解(ground truth)と比較して計算している。
+CERは、正解を出力に変換するために必要な最低限の操作回数として計算される。
+CERは、以下のように定義されている。
+
+\begin{equation}
+    \text{CER} =
+    \frac{i + s + d}{n} \times 100 \%
+\end{equation}
+
+\begin{table*}[htbp]
+    \centering
+    \caption{あるデータセットにおけるCERの計算}
+    \label{tb:Table3}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Ground truth}                                & \textbf{Output}                                     \\ 
+        \hline
+        \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}\{\\~"0": "\textbf{PROVINSI JAWA BARAT}",\\~"1": "\textbf{KOTA BANDUNG}",\\~"NIK": "\textbf{3273041508720012}",\\~"nama": "\textbf{NANANG KOSIM}", \\~"tempat\_tanggal\_lahir":~ "\textbf{BANDUNG, 15-08-}\\\textbf{1972}", \\~"jenis\_kelamin": "\textbf{LAKI-LAKI}", \\~"gol\_darah": "\textbf{-}", \\~"alamat":~ "\textbf{JL.KOPO GG.PANYILEUKAN}", \\~"rt\_rw": "\textbf{007/005}", \\~"kel\_desa": "\textbf{KOPO}", \\~"kecamatan": "\textbf{BOJONGLOA KALER}", \\~"agama": "\textbf{ISLAM}", \\~"status\_perkawinan": "\textbf{KAWIN}", \\~"pekerjaan": "\textbf{WIRASWASTA}", \\~"kewarganegaraan": "\textbf{WNI}", \\~"berlaku\_hingga": "\textbf{SEUMUR HIDUP}" \\\}\end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}\{\\~"0": "\textbf{PROVINSI JAWA BARAT}",\\~"1": "\textbf{KOTA BANDUNG}",\\~"NIK": "\textbf{3273041508720012}", \\~"nama": "\textbf{INANANG KOSIM}",\\~"tempat\_tanggal\_lahir": "\textbf{BANDUNG, 15-08-}\\\textbf{1972}", \\~"jenis\_kelamin": "\textbf{LAKI-LAKI}",\\~"gol\_darah": "\textbf{-}",\\~"alamat": "\textbf{JL.KOPO GG.PANYILEUKAN}",\\~"rt\_rw": "\textbf{007/005}",\\~"kel\_desa": "\textbf{KOPO}",\\~"kecamatan": "\textbf{BOJONGLOA KALER}",\\~"agama": "\textbf{ISLAM}",\\~"status\_perkawinan": "\textbf{KAWIN}",\\~"pekerjaan": "\textbf{WIRASWASTA}",\\~"kewarganegaraan": "\textbf{WNI}",\\~"berlaku\_hingga": "\textbf{SEUMUR HIDUP}"\\\}\end{tabular}} \\ 
+        \hline
+        \multicolumn{2}{|l|}{\begin{tabular}[c]{@{}l@{}}\textbf{Calculation}\\\\Insert (i) : 0\\Delete (d) : 1\\Substitude (s) : 0\\Number of characters in the ground truth (n) : 171 \\\\ $\text{CER} = \frac{0 + 1 + 0}{171} \times 100\% = 0.58\%$ \\ \end{tabular}}                                                       \\
+        \hline
+    \end{tabular}
+\end{table*}
+
+ここで、$n$は参照テキストの文字数、$i$は挿入されている文字数、$s$は置き換えられた文字数、$d$は削除された文字数を表している[19][20]。
+CERの計算中、キーは無視し、各領域の値のみを計算する。
+表\ref{tb:Table3}に示されるように、1つの画像でCERを計算する例を提供している。
+全ての画像のCERを加えた後、その数をデータセット内の画像数で割ることで、平均CERを計算する。
+
+
+\subsection{実験結果}
+
+\begin{table*}[hbtp]
+    \centering
+    \caption{Tesseract-OCRの平均CER}
+    \label{tb:Table4}
+    \begin{tabular}{|l|l|l|l|l|}
+        \cline{2-5}
+        \multicolumn{1}{l|}{}          & \multicolumn{4}{l|}{Average CER (\%)}                                                                                      \\ 
+        \cline{2-5}
+        \multicolumn{1}{l|}{}          & \begin{tabular}[c]{@{}l@{}}TRUNC\\Thresholding\end{tabular}        & \begin{tabular}[c]{@{}l@{}}TOZERO\\Thresholding\end{tabular} & \begin{tabular}[c]{@{}l@{}}OTSU\\Thresholding\end{tabular} & Non-Thresholding \\ 
+        \hline
+        original                       & -                                     & -                              & -                              & 38.13            \\ 
+        \hline
+        Binarization                   & 30.56                                 & 51.64                          & 41.27                          & -                \\ 
+        \hline
+        \begin{tabular}[c]{@{}l@{}}Shadow\\Removal\end{tabular} & 48.95                                 & 48.95                          & 48.95                          & -                \\ 
+        \hline
+        \begin{tabular}[c]{@{}l@{}}Shadow\\removal +\\Binarization\end{tabular} & 19.20                                 & 20.81                          & 33.43                          & -                \\ 
+        \hline
+        \begin{tabular}[c]{@{}l@{}}Deblurring +\\Binarization\end{tabular} & 29.16                                 & 52.88                          & 40.92                          & -                \\ 
+        \hline
+        \begin{tabular}[c]{@{}l@{}}Deblurring +\\Shadow\\removal +\\Binarization\\(Proposed\\method)\end{tabular} & 18.82                                 & 19.65                          & 33.06                          & -                \\
+        \hline
+    \end{tabular}
+\end{table*}
+
+陰影処理と二値化を組み合わせて使うことによって、私達は効率的に背景画像を除去することができ、e-KTP の可読性が向上した。
+図\ref{fig:Figure5}は元の画像と処理済みの画像の例を示している。
+図\ref{fig:Figure5}(a)の背景は、私達の方法で効果的に除去されていることが図\ref{fig:Figure5}(d)で確認できる。
+表\ref{tb:Table4}で、Tesseract-OCR の精度を向上させるために使用した技術の組み合わせた結果を示している。
+結果は異なる閾値処理の方法に基づき、4つの列に分けられている。
+
+一見すると、図\ref{fig:Figure5}(c)の元画像と、図\ref{fig:Figure5}(e)のぼかし除去された画像には違いがないように見えるが、表\ref{tb:Table4}では、DeblurGAN によって Tesseract-OCR の精度が向上していることが示されている。
+二値化、ぼかし除去と二値化、または陰影除去と二値化、ぼかし除去と陰影除去と二値化を比較することで、改善を確認できる。
+
+また、私達の研究では、二値画像を陰影除去した結果が、陰影除去もしくは二値化を単独で行うよりも優れた精度を示すことがわかった。
+そのため、私達はまず陰影除去を施し、その後に二値化することを選択した。
+陰影除去と二値化の組み合わせを使用することで、平均CERを18.93\%まで削減した。
+この結果より、陰影除去と二値化の組み合わせは、OCR精度の向上に非常に有効であることが示されている。
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/Figure6.png}
+        \caption{反射を含む画像データセットに対する大津の二値化の結果: (a)大津の二値化前 (b)大津の二値化後}
+        \label{fig:Figure6}
+    \end{center}
+\end{figure}
+
+A\&N [12]氏, Akhter [12]氏ら、Satyawan [4]氏らの比較から、表\ref{tb:Table4}によると、大津の二値化は私達のデータセットではうまく機能していないことがわかります。
+これは、いくつかのデータセットに反射が含まれているためであると考えられる。
+反射が多い場合、画像にノイズが多く含まれ、反射がテキスト領域と重なってしまい、テキスト領域を検出できないことがある(図\ref{fig:Figure6}を参照)。
+私達の研究では、TRUNC閾値処理が Tesseract-OCR でうまく機能していることが示されている。
+TRUNC閾値処理を利用し、ぼかし除去、陰影除去、および二値化を組み合わせることで、最も低いCER値である18.82\%を達成した。
+これはインドネシアのIDカードの解析において、Tesseract-OCR 精度を向上させるため、正規表現を用いたた技術である。
+
+これらの結果に基づき、GANは Tesseract-OCR のOCR精度を向上させることができるとわかる。
+前処理の段階でGANを利用することは、TRUNC閾値処理による陰影除去と二値化を組み合わせると、最良の結果が得られることがわかる。
+
+
+
+\section{結論}
+
+ほとんどのIDカードの画像は、常に良質な画像を生成するわけではない携帯電話のカメラで撮影されるため、文字認識の精度に影響を与える。
+この問題を解決するため、私たちは最適な前処理技術を見つけ、画像の品質を向上させようと試みた。
+
+本実験では、DeblurGAN を特に利用した。
+Tesseract-OCR の性能を効果的に向上させるため、前処理の段階において画像の質を向上させるとして、GANを利用した。
+
+OCR結果の改善には、様々な余地がある。
+異なる種類のGANを用いる、複数のGANを組み合わせる、データセットの品質向上のため、画像からノイズやドット、ブロブを除去するということが可能である。
+また、より高いOCR精度を実現するため、異なる後処理方法やOCR手法を試すこともできる。
+
 
 
 
 \section{訳者の感想}
 開発している段階で、最も懸念のある文字抽出に関する論文を選んだ。
 文字抽出の精度が悪い場合、その後のラベル付けにも大きな影響が及ぶことと、入力領域の抽出は比較的うまくいっていること、Tesseract-OCR と大津の二値化による複雑な入力画像に対する文字抽出を行っていることが本論文を選んだ理由である。
+フォームが常に同じではないため、大津の二値化を使う前提であることが
 
 \emph{参考文献}
 
