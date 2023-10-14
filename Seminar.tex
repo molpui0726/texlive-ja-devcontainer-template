@@ -284,17 +284,17 @@ Regex が失敗し、文字列にコロンが含まれていない場合、最�
     \label{tb:Table2}
     \begin{tabular}{|l|l|}
         \hline
-        \multicolumn{1}{|c|}{\textbf{Technique}} & \multicolumn{1}{c|}{\textbf{Description}} \\ 
+        \multicolumn{1}{|c|}{\textbf{画像処理}} & \multicolumn{1}{c|}{\textbf{処理の詳細}} \\ 
         \hline
-        \textit{Original}                        & \begin{tabular}[c]{@{}l@{}}We rectified the input image into 600x400 and masked it in the area of the right \\ side of Indonesian ID card which contains profile picture, city name, date, and \\ signature into blue color.\end{tabular}            \\ 
+        \textit{画像処理なし}                        & \begin{tabular}[c]{@{}l@{}}入力画像を600x400に平行化し、証明写真、出身地、生年月日、署名が含まれる \\ インドネシアIDカードの右側の領域を青色にマスクした。\end{tabular}            \\ 
         \hline
-        \textit{Binarization}                    & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we binarized it. We tried 3 different thresholding, which are TRUNC,\\TOZERO, and OTSU.\end{tabular}            \\ 
+        \textit{二値化}                    & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を平行化、マスクし、二値化した。\\ 閾値処理はTRUNC, TOZERO, OTSUの3種類を試した。\end{tabular}            \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{Shadow removal}\\+ \textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied shadow removal and binarized it using 3 different approaches\\(TRUNC, TOZERO, and OTSU).\end{tabular}            \\ 
+        \begin{tabular}[c]{@{}l@{}}\textit{陰影除去}\\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を平行化し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\陰影除去と二値化を行った。\end{tabular}            \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{Deblurring} +\\\textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied DeblurGAN~\cite{bib16} and binarized it using 3 different approaches\\(TRUNC, TOZERO, and OTSU).~ ~~\end{tabular}            \\ 
+        \begin{tabular}[c]{@{}l@{}}\textit{ぼかし除去} \\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を平行化し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\DeblurGAN~\cite{bib16}~によるぼかし除去と二値化を行った。 ~~\end{tabular}            \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{Deblurring} +\\\textit{Shadow removal}\\+ \textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied DeblurGAN~\cite{bib16}, shadow removal, and binarized it using 3 \\different approaches (TRUNC, TOZERO, and OTSU).~ ~~\end{tabular}            \\
+        \begin{tabular}[c]{@{}l@{}}\textit{ぼかし除去} \\+ \textit{陰影除去}\\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を平行化し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\DeblurGAN~\cite{bib16}~によるぼかし除去と陰影除去、二値化を行った。 ~~\end{tabular}            \\
         \hline
     \end{tabular}
 \end{table*}
@@ -348,21 +348,21 @@ CERの計算中、キーは無視し、各領域の値のみを計算する。
     \label{tb:Table4}
     \begin{tabular}{|l|c|c|c|c|}
         \cline{2-5}
-        \multicolumn{1}{l|}{}          & \multicolumn{4}{c|}{\textbf{Average CER (\%)}}                                                                                               \\ 
+        \multicolumn{1}{l|}{}          & \multicolumn{4}{c|}{\textbf{平均 CER (\%)}}                                                                                               \\ 
         \cline{2-5}
-        \multicolumn{1}{l|}{}          & \begin{tabular}[c]{@{}c@{}}\textbf{TRUNC}\\\textbf{Thresholding}\end{tabular}                 & \begin{tabular}[c]{@{}c@{}}\textbf{TOZERO}\\\textbf{Thresholding}\end{tabular} & \begin{tabular}[c]{@{}c@{}}\textbf{OTSU}\\\textbf{Thresholding}\end{tabular} & \textbf{Non-Thresholding} \\ 
+        \multicolumn{1}{l|}{}          & \begin{tabular}[c]{@{}c@{}}\textbf{TRUNC}\\\textbf{閾値処理}\end{tabular}                 & \begin{tabular}[c]{@{}c@{}}\textbf{TOZERO}\\\textbf{閾値処理}\end{tabular} & \begin{tabular}[c]{@{}c@{}}\textbf{OTSU}\\\textbf{閾値処理}\end{tabular} & \textbf{閾値処理なし} \\ 
         \hline
-        Original                       & -                                              & -                              & -                              & \textbf{38.13}            \\ 
+        画像処理なし                       & -                                              & -                              & -                              & \textbf{38.13}            \\ 
         \hline
-        Binarization                   & \textbf{30.56}                                 & 51.64                          & 41.27                          & -                         \\ 
+        二値化                   & \textbf{30.56}                                 & 51.64                          & 41.27                          & -                         \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}Shadow\\Removal\end{tabular} & 48.95                                          & 48.95                          & 48.95                          & -                         \\ 
+        \begin{tabular}[c]{@{}l@{}}陰影除去\end{tabular} & 48.95                                          & 48.95                          & 48.95                          & -                         \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}Shadow\\removal +\\Binarization\end{tabular} & \textbf{19.20}                                 & 20.81                          & 33.43                          & -                         \\ 
+        \begin{tabular}[c]{@{}l@{}}陰影除去\\+ 二値化\end{tabular} & \textbf{19.20}                                 & 20.81                          & 33.43                          & -                         \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}Deblurring +\\Binarization\end{tabular} & \textbf{29.16}                                 & 52.88                          & 40.92                          & -                         \\ 
+        \begin{tabular}[c]{@{}l@{}}ぼかし除去\\+ 二値化\end{tabular} & \textbf{29.16}                                 & 52.88                          & 40.92                          & -                         \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}Deblurring +\\Shadow\\removal +\\Binarization\\\textbf{(Proposed}\\\textbf{method)}\end{tabular} & \textbf{18.82}                                 & 19.65                          & 33.06                          & -                         \\
+        \begin{tabular}[c]{@{}l@{}}ぼかし除去\\+ 陰影除去\\+ 二値化\\\textbf{(提案手法)}\end{tabular} & \textbf{18.82}                                 & 19.65                          & 33.06                          & -                         \\
         \hline
     \end{tabular}
 \end{table*}
@@ -389,12 +389,12 @@ CERの計算中、キーは無視し、各領域の値のみを計算する。
     \end{center}
 \end{figure}
 
-A\&N~\cite{bib12}氏, Akhter~\cite{bib12}氏ら、Satyawan~\cite{bib4}氏らの比較から、表\ref{tb:Table4}によると、大津の二値化は私達のデータセットではうまく機能していないことがわかります。
+A\&N~\cite{bib12}氏, Akhter~\cite{bib12}氏ら、Satyawan~\cite{bib4}氏らの比較から、表\ref{tb:Table4}によると、大津の二値化は私達のデータセットではうまく機能していないことがわかる。
 これは、いくつかのデータセットに反射が含まれているためであると考えられる。
 反射が多い場合、画像にノイズが多く含まれ、反射がテキスト領域と重なってしまい、テキスト領域を検出できないことがある(図\ref{fig:Figure6}を参照)。
 私達の研究では、TRUNC閾値処理が Tesseract-OCR でうまく機能していることが示されている。
 TRUNC閾値処理を利用し、ぼかし除去、陰影除去、および二値化を組み合わせることで、最も低いCER値である18.82\%を達成した。
-これはインドネシアのIDカードの解析において、Tesseract-OCR 精度を向上させるため、正規表現を用いたた技術である。
+これはインドネシアのIDカードの解析において、Tesseract-OCR 精度を向上させるため、正規表現を用いた技術である。
 
 これらの結果に基づき、GANは Tesseract-OCR のOCR精度を向上させることができるとわかる。
 前処理の段階でGANを利用することは、TRUNC閾値処理による陰影除去と二値化を組み合わせると、最良の結果が得られることがわかる。
