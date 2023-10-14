@@ -17,7 +17,7 @@
 
 \title{\bf{\LARGE{Improving OCR quality of documents using generative adversarial networks} \\ \Large{敵対的生成ネットワークを用いた文書のOCR性能の向上}}}
 \author{ {EMILDA ZHANG \and VINCENT ARDYAN PUTRA \and GEDE PUTRA KUSUMA} \\
-    Computer Science Department, \\ 
+    Computer Science Department, \\
     BINUS Graduate Program - Master of Computer Science, \\ 
     Bina Nusantara University, Jakarta, Indonesia, 11480 \\
     Journal of Theoretical and Applied Information Technology,\\
@@ -64,11 +64,11 @@ Akhter, Bhuiyan, Uddin~\cite{bib5}氏は、OCR処理においても画像補正�
 そのため、ノイズのある画像に対しては最適なOCR精度で出力することはできない。
 Soeseno と Liliana~\cite{bib6}氏 および Thanh と Trong~\cite{bib7}氏によって提案されたセグメンテーション方法に基づき、IDカード画像のOCR精度を向上させる手法もあるが、この手法は適切な角度で撮影された高品質な画像に限定されている。
 
-lan 氏らは、近年の深層学習における重要な課題となっている画像の補正に関して、Generative Adversarial Network(GAN, 敵対的生成ネットワーク)と呼ばれるフレームワークを紹介した~\cite{bib8}。
+lan 氏らは、近年の深層学習における重要な課題となっている画像の補正に関して、Generative Adversarial Network(GAN, 敵対的生成ネットワーク)と呼ばれる構想を紹介した~\cite{bib8}。
 Lat と Jawahar~\cite{bib9}氏、Su~\cite{bib10}氏ら、およびKong と Wang~\cite{bib11}氏は、GANベースの画像前処理を適用し Tesseract-OCR の精度を向上させる手法を提案した。
 これにより、白い背景をもつ文書テキスト画像に解像度強化を行う。
 ただし、この方法ではIDカードや携帯電話のカメラで撮影された画像など、より複雑なテキスト画像のデータセットには適していない。
-さらに、以前の研究では、PCR処理のための画像解像度を向上させるためにGANによる前処理も、特定のデータセットに対して限定されていた。
+さらに、以前の研究では、OCR処理のための画像解像度を向上させるためにGANによる前処理も、特定のデータセットに対して限定されていた。
 
 私達はGANを含む他の前処理を組み合わせて使用することで、より広いデータセットをカバーし、テキスト画像がスキャンされた文書画像だけでなく、複雑な背景が写るRAW画像にも適用可能であると考えている。
 したがって、この論文の貢献には、機械学習に基づいた前処理における画像品質向上のための手法が含まれている。
@@ -163,7 +163,7 @@ DeblurGAN の識別器は、ストライド 1/2 の2つの畳み込みブロッ�
 このステップの最後に正規化を行い、配列に追加して、全平面を1つの画像として結合する(図\ref{fig:Figure2})
 
 最後に、二値化では、異なる3つの閾値処理手法を使用した。
-TRUNC閾値処理、TOZERO 閾値処理、 A\&N ~\cite{bib12}氏、Akhter~\cite{bib5}氏ら、Satyawan~\cite{bib4}氏らによって示された、大津の二値化を行った。
+TRUNC閾値処理、TOZERO 閾値処理、 A\&N~\cite{bib12}氏、Akhter~\cite{bib5}氏ら、Satyawan~\cite{bib4}氏らによって示された、大津の二値化を行った。
 これらは画像の二値化において、より良い結果を出力するとされている。
 TRUNC閾値処理では、画素値が閾値以下の値は変更されず、閾値以上の値は閾値の値に設定され、以下のように表される。
 
@@ -210,9 +210,9 @@ TOZERO閾値処理では、画素値が閾値以下の値は0に設定し、閾�
         \hline
                                        & \multicolumn{1}{c|}{\textbf{Dataset 1}} & \multicolumn{1}{c|}{\textbf{Dataset 2}} \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{Ground}\\\textbf{Truth}\end{tabular}  & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT", \\"1": "KOTA BANDUNG",\\"NIK": "3273041508720012", \\"nama": "NANANG KOSIM", \\"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\"jenis\_kelamin": "LAKI-LAKI",\\"gol\_darah": "-", \\"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\"rt\_rw": "007/005",\\"kel\_desa": "KOPO", \\"kecamatan":"BOJONGLOA\\KALER",\\"agama":"ISLAM",\\"status\_perkawinan": "KAWIN", \\"pekerjaan": "WIRASWASTA", \\"kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR HIDUP" \\\}\end{tabular}           & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT", \\"1": "KOTA BANDUNG", \\"NIK": "3273041504780013", \\"nama": "ADI ROHMAWAN", \\"tempat\_tanggal\_lahir": "SRAGEN, 15-\\04-1978", \\"jenis\_kelamin": "LAKI-LAKI", \\"gol\_darah": "-", \\"alamat": "JL.KOPO GG.LAPANG",\\"rt\_rw": "009/004",\\"kel\_desa":"KOPO",\\"kecamatan":"BOJONGLOA KALER",\\"agama": "ISLAM",\\"status\_perkawinan": "KAWIN",\\"pekerjaan": "WIRASWASTA", \\"kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR HIDUP"\\\}\end{tabular}           \\ 
+        \begin{tabular}[c]{@{}l@{}}\textbf{Ground}\\\textbf{Truth}\end{tabular}  & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT", \\"1": "KOTA BANDUNG",\\"NIK": "3273041508720012", \\"nama": "NANANG KOSIM", \\"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\"jenis\_kelamin": "LAKI-LAKI",\\"gol\_darah": "-", \\"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\"rt\_rw": "007/005",\\"kel\_desa": "KOPO", \\"kecamatan": "BOJONGLOA\\KALER",\\"agama":"ISLAM",\\"status\_perkawinan": "KAWIN", \\"pekerjaan": "WIRASWASTA", \\"kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR HIDUP" \\\}\end{tabular}           & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT", \\"1": "KOTA BANDUNG", \\"NIK": "3273041504780013", \\"nama": "ADI ROHMAWAN", \\"tempat\_tanggal\_lahir":"SRAGEN, 15-\\04-1978",\\"jenis\_kelamin":"LAKI-LAKI",\\"gol\_darah": "-",\\"alamat":"JL.KOPO GG.LAPANG",\\"rt\_rw": "009/004",\\"kel\_desa":"KOPO",\\"kecamatan":"BOJONGLOA KALER",\\"agama": "ISLAM",\\"status\_perkawinan": "KAWIN",\\"pekerjaan": "WIRASWASTA", \\"kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR HIDUP"\\\}\end{tabular}           \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{OCR Output}\\\textbf{using}\\\textbf{Pytesseract}\end{tabular} & \begin{tabular}[l]{p{6cm}}PROVINSI JAWA BARAT\\KOTA BANDUNG\\NIK : 32730415087?20012 \\Nama INANANG KOSIM\\TempatTgi Lahir : BANDUNG, 15-08-\\1972\\Jenis kelamin : LAKI-LAKI\\Gol. Darah :-\\Alamat : JL.KOPO\\GG.PANYILEUKAN\\RTRW :007/005\\KeVDesa :KOPO\\Kecamatan:BOJONGLOA KALER\\Agama : ISLAM\\Status Perkawinan: KAWIN\\Pekerjaan :WIRASWASTA\end{tabular}          & \begin{tabular}[l]{p{6cm}}PROVINSI JAWA RAPAT\\KOTA BANDUNG\\NIK : 3073041508 ?80053\\Nam3 ADI ROHMAWAN\\Tempat yisne SRAGEN, 1S Oa 1573\\us Kemasan AKG LAKI Gor Daan\\Mam 1 KOPO GG LAPANG\\87 02006\\KecTarsa OPO\\meramatn — BOJONGIOAXAIFR\\Dalan ISLAM\\Sisam Penaunnan KAWIN\\Senarman .WARASWASTA\\Kema ganegaraso. WNI\end{tabular}          \\ 
+        \begin{tabular}[c]{@{}l@{}}\textbf{OCR Output}\\\textbf{using}\\\textbf{Pytesseract}\end{tabular} & \begin{tabular}[l]{p{6cm}}PROVINSI JAWA BARAT\\KOTA BANDUNG\\NIK : 32730415087?20012 \\Nama INANANG KOSIM\\TempatTgi Lahir : BANDUNG, 15-08-\\1972\\Jenis kelamin : LAKI-LAKI\\Gol. Darah :-\\Alamat : JL.KOPO\\GG.PANYILEUKAN\\RTRW :007/005\\KeVDesa :KOPO\\Kecamatan: BOJONGLOA KALER\\Agama: ISLAM\\Status Perkawinan: KAWIN\\Pekerjaan :WIRASWASTA\end{tabular}          & \begin{tabular}[l]{p{6cm}}PROVINSI JAWA RAPAT\\KOTA BANDUNG\\NIK: 3073041508 ?80053\\Nam3 ADI ROHMAWAN\\Tempat yisne SRAGEN, 1S Oa 1573\\us Kemasan AKG LAKI Gor Daan\\Mam 1 KOPO GG LAPANG\\87 02006\\KecTarsa OPO\\meramatn — BOJONGIOAXAIFR\\Dalan ISLAM\\Sisam Penaunnan KAWIN\\Senarman .WARASWASTA\\Kema ganegaraso. WNI\end{tabular}          \\
         \hline
     \end{tabular}
 \end{table*}
@@ -222,7 +222,7 @@ TOZERO閾値処理では、画素値が閾値以下の値は0に設定し、閾�
     \begin{tabular}{|l|l|l|}
         \hline
                                                      & \begin{tabular}[l]{@{}l@{}}Kewarganegaraan: WNI\\Berlaku Hingga: SEUMUR HIDUP\end{tabular}       & \begin{tabular}[l]{@{}l@{}}Berak Hingga SEUMUR HIDUP\\be .\end{tabular}        \\ 
-        \hline        \begin{tabular}[c]{@{}l@{}}\textbf{Key-Value}\\\textbf{Pairs}\\\textbf{Extracted}\end{tabular} & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT",\\"1": "KOTA BANDUNG",\\"NIK": "3273041508720012",\\"nama": "INANANG KOSIM", "tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\"jenis\_kelamin": "LAKI-LAKI",\\"gol\_darah": "-",\\"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\"rt\_rw": "007/005",\\"kel\_desa": "KOPO",\\"kecamatan":"BOJONGLOA\\KALER",  "agama": "ISLAM", "status\_perkawinan": "KAWIN",\\"pekerjaan": "WIRASWASTA",\\ "kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR\\HIDUP"\\\}\end{tabular}       & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA RAPAT",\\"1": "KOTA BANDUNG",\\"NIK": "307304150880053",\\"nama": "N ADI ROHMAWAN", \\"tempat\_tanggal\_lahir": "Tempat yisne SRAGEN, 1S Oa 1573",\\"jenis\_kelamin": "LAKI-LAKI", \\"gol\_darah": "-",\\"alamat":"M 1 KOPO GG LAPANG",\\"rt\_rw": "87 02006",\\"kel\_desa":"KT OPO",\\"kecamatan":"BOJONGIOAXAIFR",\\"agama": "ISLAM",\\"status\_perkawinan": "KAWIN", \\"pekerjaan": "S WARASWASTA",\\"kewarganegaraan": "WNI",\\"berlaku\_hingga":"SEUMUR HIDUP"\\\} \end{tabular}        \\
+        \hline        \begin{tabular}[c]{@{}l@{}}\textbf{Key-Value}\\\textbf{Pairs}\\\textbf{Extracted}\end{tabular} & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT",\\"1": "KOTA BANDUNG",\\"NIK": "3273041508720012",\\"nama": "INANANG KOSIM", "tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\"jenis\_kelamin": "LAKI-LAKI",\\"gol\_darah": "-",\\"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\"rt\_rw": "007/005",\\"kel\_desa": "KOPO",\\"kecamatan":"BOJONGLOA\\KALER",  "agama": "ISLAM", "status\_perkawinan": "KAWIN",\\"pekerjaan": "WIRASWASTA",\\ "kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR\\HIDUP"\\\}\end{tabular}       & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA RAPAT",\\"1": "KOTA BANDUNG",\\"NIK": "307304150880053",\\"nama": "N ADI ROHMAWAN", \\"tempat\_tanggal\_lahir": "Tempat yisne SRAGEN, 1S Oa 1573",\\"jenis\_kelamin": "LAKI-LAKI",\\"gol\_darah": "-",\\"alamat":"M 1 KOPO GG LAPANG",\\"rt\_rw": "87 02006",\\"kel\_desa":"KT OPO",\\"kecamatan":"BOJONGIOAXAIFR",\\"agama": "ISLAM",\\"status\_perkawinan": "KAWIN", \\"pekerjaan": "S WARASWASTA",\\"kewarganegaraan": "WNI",\\"berlaku\_hingga":"SEUMUR HIDUP"\\\} \end{tabular}        \\
         \hline
         \textbf{\textbf{CER}}                        & \multicolumn{1}{c|}{\textbf{0.58\%}} & \multicolumn{1}{c|}{\textbf{29.70\%}} \\
         \hline
@@ -425,7 +425,7 @@ OCR結果の改善には、様々な余地がある。
 
 \begin{thebibliography}{99}
     \bibitem{bib1}
-    W.~Bieniecki, S.~Grabowski, and W.~Rozenberg, 
+    W.~Bieniecki, S.~Grabowski, and W.~Rozenberg,
     \newblock “Image preprocessing for improving OCR accuracy”,
     \newblock { {\em Proceeding of the 3rd International Conference of Young Scientists ‘Perspective Technologies and Methods in MEMS Design’, MEMSTECH 2007}, 2007, pp. 75–80. }
     
@@ -435,7 +435,7 @@ OCR結果の改善には、様々な余地がある。
     \newblock { {\em Proceedings - International Conference on Pattern Recognition}, 2010, pp. 2021–2024.}
     
     \bibitem{bib3}
-    S.~Bhaskar, N.~Lavassar, and S.~Green, 
+    S.~Bhaskar, N.~Lavassar, and S.~Green,
     \newblock {“Implementing Optical Character Recognition on the Android Operating System for Business Cards”},
     \newblock { {\em CogITo Smart Journal}, Vol. 2, No. 2, 2016, pp. 194. }
     
@@ -495,8 +495,8 @@ OCR結果の改善には、様々な余地がある。
     \newblock { {\em 2008 The Eighth IAPR International Workshop on Document Analysis Systems}, 2008, pp. 525-532. }
     
     \bibitem{bib15}
-    S.~Hartanto, A.~Sugiharto, and S.~N.~Endah, 
-    \newblock “Optical Character Recognition Menggunakan Algoritma Template Matching Correlation”, 
+    S.~Hartanto, A.~Sugiharto, and S.~N.~Endah,
+    \newblock “Optical Character Recognition Menggunakan Algoritma Template Matching Correlation”,
     \newblock { {\em Jurnal Masyarakat Informatika}, Vol. 5, No. 9, 2015, pp. 1-12. }
     
     \bibitem{bib16}
@@ -505,7 +505,7 @@ OCR結果の改善には、様々な余地がある。
     \newblock { {\em Proceedings of the IEEE Computer Society Conference on Computer Vision and Pattern Recognition}, 2018, pp. 8183–8192. }
     
     \bibitem{bib17}
-    M.~Arjovsky, S.~Chintala, and L.~Bottou, 
+    M.~Arjovsky, S.~Chintala, and L.~Bottou,
     \newblock “Wasserstein GaN”.
     \newblock { {\em ArXiv}, 2017. }
     
@@ -515,7 +515,7 @@ OCR結果の改善には、様々な余地がある。
     \newblock { {\em 2018 Fourth International Conference on Computing Communication Control and Automation (ICCUBEA)}, 2018, pp. 1–4. }
     
     \bibitem{bib19}
-    I.~S.~MacKenzie amd R.~W.~Soukoreff, 
+    I.~S.~MacKenzie amd R.~W.~Soukoreff,
     \newblock “A character-level error analysis technique for evaluating text entry methods”,
     \newblock { {\em ACM International Conference Proceeding Series}, Vol. 31, No. 1, 2002, pp. 243–246. }
     
