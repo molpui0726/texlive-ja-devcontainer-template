@@ -286,15 +286,15 @@ Regex が失敗し、文字列にコロンが含まれていない場合、最�
         \hline
         \multicolumn{1}{|c|}{\textbf{画像処理}} & \multicolumn{1}{c|}{\textbf{処理の詳細}} \\ 
         \hline
-        \textit{画像処理なし}                        & \begin{tabular}[c]{@{}l@{}}入力画像を600x400に平行化し、証明写真、出身地、生年月日、署名が含まれる \\ インドネシアIDカードの右側の領域を青色にマスクした。\end{tabular}            \\ 
+        \textit{画像処理なし}                        & \begin{tabular}[c]{@{}l@{}}入力画像の画像サイズを600\times400に変更し、証明写真、出身地、生年月日、署名が含まれる \\ インドネシアIDカードの右側の領域を青色にマスクした。\end{tabular}            \\ 
         \hline
-        \textit{二値化}                    & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を平行化、マスクし、二値化した。\\ 閾値処理はTRUNC, TOZERO, OTSUの3種類を試した。\end{tabular}            \\ 
+        \textit{二値化}                    & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を画像サイズを変更、マスクし、二値化した。\\ 閾値処理はTRUNC, TOZERO, OTSUの3種類を試した。\end{tabular}            \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{陰影除去}\\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を平行化し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\陰影除去と二値化を行った。\end{tabular}            \\ 
+        \begin{tabular}[c]{@{}l@{}}\textit{陰影除去}\\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を画像サイズを変更し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\陰影除去と二値化を行った。\end{tabular}            \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{ぼかし除去} \\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を平行化し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\DeblurGAN~\cite{bib16}~によるぼかし除去と二値化を行った。 ~~\end{tabular}            \\ 
+        \begin{tabular}[c]{@{}l@{}}\textit{ぼかし除去} \\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を画像サイズを変更し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\DeblurGAN~\cite{bib1}~によるぼかし除去と二値化を行った。 ~~\end{tabular}            \\ 
         \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{ぼかし除去} \\+ \textit{陰影除去}\\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を平行化し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\DeblurGAN~\cite{bib16}~によるぼかし除去と陰影除去、二値化を行った。 ~~\end{tabular}            \\
+        \begin{tabular}[c]{@{}l@{}}\textit{ぼかし除去} \\+ \textit{陰影除去}\\+ \textit{二値化}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}画像処理なしと同じ手法で入力画像を画像サイズを変更し、マスクした。\\次に、3つの異なるアプローチ（TRUNC、TOZERO、OTSU）を用いて、\\DeblurGAN~\cite{bib1}~によるぼかし除去と陰影除去、二値化を行った。 ~~\end{tabular}            \\
         \hline
     \end{tabular}
 \end{table*}
