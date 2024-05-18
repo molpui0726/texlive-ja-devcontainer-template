@@ -9,6 +9,8 @@
 \usepackage{ltablex}
 \usepackage{enumitem}
 
+\usepackage{booktabs}
+
 \def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
 \def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
 
@@ -26,17 +28,17 @@
 
 \begin{abstract}
     歴史的文書の二値化は、多くの劣化が存在するため困難な作業である。
-    多くの既存の局所二値化の手法では、手動で調整した特定のパラメータを使用する。
-    これらの手法の出力は、設定するパラメータの値に大きく依存する。
-    そのようなパラメータの1つが、テキスト画像全体に対して固定されたウィンドウサイズである。
+    多くの既存の適応的二値化の手法では、手動で調整した特定のパラメータを使用する。
+    これらの手法における出力は、設定するパラメータの値に大きく依存する。
+    そのようなパラメータの1つが、文書画像全体に対して固定するウィンドウサイズである。
     % ウインドウサイズ調べること
     % 局所的二値化で、注目画素を動かす際に、参照する画素のこと？
     % OpenCV では、ブロックサイズと言われていた。
-    固定されたウィンドウサイズは、ストロークの幅やテキストのサイズが変化する画像に対してはうまく機能しない。
-    提案する二値化手法（Modified Sauvola）は、Sauvolaの二値化手法を改良したものである。
-    これは、ストローク幅変換(SWT)を用いて、画像のピクセル間で動的にウィンドウサイズを自動的に計算する。
+    固定したウィンドウサイズは、ストロークの幅やテキストのサイズが変化する画像に対してはうまく機能しない。
+    提案する二値化手法(Modified Sauvola)は、Sauvolaの二値化手法を改良したものである。
+    これは、ストローク幅変換(SWT)を用いて、画像のピクセル間で動的にウィンドウサイズを計算する。
     これにより、手動で調整するパラメータの数を減らすことができた。
-    結果は、定量的尺度であるFM、PSNR、NRM、MPM、DRDを用いて、9つの既存手法と比較する。
+    実行結果を、定量的評価指標であるFM、PSNR、NRM、MPM、DRDを用いて、9つの既存二値化手法と比較する。
     その結果、ストローク幅やテキストサイズが変化する画像に対して、提案手法が既存手法よりも優れていることがわかった。
 \end{abstract}
 
@@ -47,66 +49,66 @@
 歴史的文書には、医学、政治、科学、文学など、さまざまな分野の膨大な知識が含まれている。
 これらは、図書館や博物館などに所蔵されているが、様々な分野の人々が恩恵を受けられるように、誰もがアクセスできるようにする必要がある。
 また、これらの文書は時間の経過とともに劣化していくため、何らかの方法で保存する必要がある。
-情報技術の出現により、これらの文書をデジタル化することが可能になった。
+情報技術の出現により、これらの文書をデジタル化することが可能となった。
 デジタル化によって得られる利点は、物理的な保管場所が少なくて済む点、保存性が向上する点、インターネット機能を使って時と場所を選ばず、すべての人が簡単にアクセスできる点である。
 今日、世界中の図書館が、書籍や雑誌、その他の可読資料のデジタル化に取り組んでいる。
 文書のデジタル化は、スキャナやカメラなどの取得システムを用いて行われる。
 デジタル化後に得られる画像は、機械で読み取り可能な形ではない。
-膨大な数の画像は、含まれる情報を編集、検索、索引をつけられなければ、あまり意味がない。
+膨大な数の画像は、含む情報に対して編集、検索、索引をつけられなければ、あまり意味がない。
 膨大な数の画像から目的の情報を取り出すことは非常に困難である。
 文書画像解析システムは、文書画像を機械可読テキストに変換するアルゴリズムと技術の集合である。
-光学式文字認識（OCR）はよく知られている文書画像解析システムである。
-これはグレースケールまたはカラー画像を二値化するプロセスであり、一般に背景は白色、前景は黒色で表現されている。
+光学式文字認識(OCR)はよく知られている文書画像解析システムである。
+これはグレースケールまたはカラー画像を二値化する処理であり、一般に背景は白色、前景は黒色で表現されている。
 画像の二値化は、計算負荷の軽減とシステム効率の向上のために行われている。
-二値化そのものは、文書画像の品質に依存する。
+二値化の処理は、文書画像の品質に依存する。
 品質の良い文書画像を二値化することは問題ないが、劣化した文書画像の場合、適切な二値画像を得ることは非常に困難である。
 歴史的文書は、環境要因、悪い保管条件、経年劣化、紙やインクの化学的性質によって、時間の経過とともに劣化する。
 このため、文書にはしわ、紙の黄変、インクのにじみ、文字の退色、汚れ、シミなどの劣化が確認できる。
 % 認識 = 文字認識？
-データ分析システムの次の段階であるセグメンテーションと認識の結果は、二値化の品質に影響される。
-画像の二値化は長年研究されており、いくつかの二値化技術が文献で提案・開発されている。
+データ分析システムの次の段階であるセグメンテーションと認識の結果は、二値化の品質に影響がある。
+画像の二値化は長年研究されており、いくつかの二値化技術が提案・開発されている。
 画像の二値化手法は、主に大域的手法と適応的手法に分類される。
 大域的手法は、単一のしきい値を使用して画像全体を二値化する。
 大域的手法は高速で、二峰性のヒストグラムを持つ画像に適している。
 不均一な照明、シミ、インクのにじみ、コントラストを含む文書は、二峰性ヒストグラムを持たないため、大域的手法ではうまく処理できない。
-Otsu (1979)、 Pun (1980, 1981)、 Johannsen と Bille (1982)、Kapurら (1985)、
-Kittler と Illingworth (1985)、Abutaleb (1989)、Brink and Pendock (1996)
-達による手法がよく知られた大域的二値化の手法である。
+Otsu(1979)\cite{bib1}、 Pun(1980, 1981)\cite{bib2}\cite{bib3}、 Johannsen と Bille(1982)\cite{bib4}、Kapurら(1985)\cite{bib5}、
+Kittler と Illingworth(1985)\cite{bib6}、Abutaleb(1989)\cite{bib7}、Brink と Pendock(1996)\cite{bib8}
+による手法がよく知られた大域的二値化の手法である。
 
-適応的二値化(Bernsen、1986; Niblack、1986; Wellner、1993; Sauvola と Pietaksinen、2000;
-Yang と Yan、2000; Wolf と Jolion、2003; Doら、2005;
-Gatosら、2006; BardleyとRoth、2007; Shafaitら、2008;
-Khurshidら、2009; Zhouら、2009; Kawanoら、2009;
-Lu と Tan、2010; Singhら、2011, 2022)
-は、劣化した文書画像に対してより優れたアプローチであり、各画素の近傍に応じて異なる閾値を推定する。
-これらの手法は、劣化の進んだ画像に対しては性能が良いが、画素近傍からの画像特徴の計算を画素ごとに行うため、処理速度が遅い。
-従来の適応的二値化技術の多くは、スライディングウィンドウに基づき、画像全体にわたって矩形のウィンドウが画素ごとに移動しながら、各画素の閾値を計算する。
-Bernsen (1986)、Niblack (1986)、Wellner (1993)、
-Sauvola と Pietaksinen (2000)、Wolf と Jolion (2003)、
-Bardley と Roth (2007)、Shafaitら (2008)、Khurshidら (2009)、
-Singhら (2011, 2012)、Natarajan と Sreedevi (2017)
+適応的二値化(Bernsen、1986\cite{bib9}; Niblack、1986\cite{bib10}; Wellner、1993\cite{bib11}; Sauvola と Pietaksinen、2000\cite{bib12};
+Yang と Yan、2000;\cite{bib13} Wolf と Jolion、2003;\cite{bib14} Doら、2005;\cite{bib15}
+Gatosら、2006;\cite{bib16} BardleyとRoth、2007;\cite{bib17} Shafaitら、2008;\cite{bib18}
+Khurshidら、2009;\cite{bib19} Zhouら、2009;\cite{bib20} Kawanoら、2009;\cite{bib21}
+Lu と Tan、2010;\cite{bib22} Singhら、2011, 2022\cite{bib23}\cite{bib24})
+は、劣化した文書画像に対してより優れた手法であり、各ピクセルの近傍に応じて異なる閾値を推定する。
+これらの手法は、劣化の進んだ画像に対しては性能が良いが、ピクセル近傍からの画像特徴の計算をピクセルごとに行うため、処理速度が遅い。
+従来の適応的二値化技術の多くは、ずらすウィンドウに基づき、画像全体にわたって矩形のウィンドウがピクセルごとに移動しながら、各ピクセルの閾値を計算する。
+Bernsen(1986)、Niblack(1986)、Wellner(1993)、
+Sauvola と Pietaksinen(2000)、Wolf と Jolion(2003)、
+Bardley と Roth(2007)、Shafaitら(2008)、Khurshidら(2009)、
+Singhら(2011, 2012)、Natarajan と Sreedevi(2017)\cite{bib25}
 による手法は、対象ピクセルの近傍の平均、標準偏差、または局所的なコントラストを利用し、閾値を決定する適応的二値化手法である。
 % 積分画像について調べること
-計算の複雑さを軽減するため、Bardley と Roth (2007)、 Shafaitら (2008)、Singhら (2011) は、
+計算の複雑さを軽減するため、Bardley と Roth(2007)、 Shafaitら(2008)、Singhら(2011) は、
 平均、標準偏差、分散などの統計的尺度を決定するために、積分画像の概念を利用した。
 積分画像の概念を用いることで、矩形領域の平均や標準偏差を計算する時間は、その領域のサイズに依存しなくなる。
 適応的二値化手法では、より良い二値化結果を得るために、対象となる画像ごとにウインドウサイズを手動で決定する必要がある。
 適応的二値化の技術には、対象画像の特徴を利用して自動的にウインドウサイズを計算するものがある。
-Doら (2005)は、パラメータとウインドウサイズを適応的に推定する、適応的Niblack法と適応Sauvola法を提案した。
+Doら(2005)は、パラメータとウインドウサイズを適応的に推定する、適応的Niblack法と適応的Sauvola法を提案した。
 適応的Niblack法と適応的Sauvola法では、ウインドウサイズは文字の高さから推定する。
-適応Niblack法では、パラメータ$k$は、小さな矩形ブロック内の白画素数に対する黒画素数の比率から計算する。
+適応的Niblack法では、パラメータ$k$は、小さな矩形ブロック内の白画素数に対する黒画素数の比率から計算する。
 % Niblack, Sauvolaは適応的か大域的かを調べておく
-適応Sauvola法では、Niblack法における局所的な$k$の値と、大域的な$k$の値から推定する。
-Gatosら (2006)、Zhouら (2009)、Kawanoら (2009)の手法は、背景推定と減算に基づき、画像内の文字の高さと幅を用いて局所的なウィンドウサイズを計算する。
-Gatosら (2006)は、Sauvolaの二値化法 (Sauvola と Pietaksinen, 2000)を用いて算出した前景領域に背景強度を補間することで、背景表面を推定している。
+適応的Sauvola法では、Niblack法における局所的な$k$の値と、大域的な$k$の値から推定する。
+Gatosら(2006)、Zhouら(2009)、Kawanoら(2009)の手法は、背景推定と減算に基づき、画像内の文字の高さと幅を用いて局所的なウィンドウサイズを計算する。
+Gatosら(2006)は、Sauvolaの二値化法(Sauvola と Pietaksinen, 2000)を用いて算出した前景領域に背景強度を補間することで、背景表面を推定している。
 Zhouら(2009)はLaplacian-Gaussアルゴリズムを用いて、背景を計算した。
 Kawanoら(2009)はメディアンフィルターを用いて背景を推定した。
-Yang と Yan (2000)、Lu と Tan (2010)、Hejdamら (2011)、Suら (2010, 2013)、
-Van と Lee (2014)、Shuklaら (2014)は、ウィンドウサイズを計算するため、入力画像の文字のストローク幅を使用した適応的二値化手法である。
+Yang と Yan(2000)、Lu と Tan(2010)、Hejdamら(2011)、Suら(2010, 2013)、
+Van と Lee(2014)、Shuklaら(2014)は、ウィンドウサイズを計算するため、入力画像の文字のストローク幅を使用した適応的二値化手法である。
 これらの手法におけるウインドウサイズは、閾値を計算するため、画像全体に対して固定である。
-Hadjadjら (2016)は、Suら (2010)の手法とSauvola (Sauvola と Pietaksinen, 2000) の手法を組み合わせたISauvola法という二値化手法を提案した。
-彼らは Suら (2010)の手法を用いて、高コントラスト画素画像を、Sauvola(Sauvola and Pietaksinen, 2000) の手法を用いて、入力画像の二値画像をそれぞれ計算した。
-最終的な二値画像は、高コントラスト画素画像と二値画像を順に組み合わせて得られる。
+Hadjadjら(2016)は、Suら(2010)の手法とSauvola(Sauvola と Pietaksinen, 2000) の手法を組み合わせたISauvola法という二値化手法を提案した。
+彼らは Suら(2010)の手法を用いて、高コントラスト画像を、Sauvola(Sauvola and Pietaksinen, 2000) の手法を用いて、入力画像の二値画像をそれぞれ計算した。
+最終的な二値画像は、高コントラスト画像と二値画像を順に組み合わせて得られる。
 % 画像表面を3Dに見立てて、水が下流へ流れていく様子を water flow とした。
 Kimら (2002)、Ohら (2005)、Valizadeh と Kabir (2013)は、ウォーターフローモデルに基づく適応的二値化技術である。
 Moghaddam と Cheriet (2010) は適応的Otsu法を導入し、二値化のためのマルチスケールフレームワークを提供した。
@@ -118,15 +120,15 @@ Sehadら (2019) は、劣化したテキスト画像からテキストを抽出�
 \subsection{ほとんどの適応的二値化手法の問題点}
 
 \begin{enumerate}[label=(\arabic*)]
-    \item ほとんどの適応的二値化手法において、二値出力は最適な結果を生成するため、手動で設定するパラメータに依存する。
+    \item ほとんどの適応的二値化手法において、最適な二値画像を生成するにあたり、手動で設定するパラメータに依存する。
           適応的二値化手法で最も重要なパラメータの1つは、閾値を得るために必要な特徴を抽出する近傍領域のサイズ（ウインドウサイズ）である。
-          これらの手法では、ウィンドウサイズは画像全体に対して固定されている。
+          これらの手法では、ウィンドウサイズは画像全体に対して固定である。
     \item 異なる画像間で、ウィンドウサイズを同じ値にした際に、画像は異なる領域で情報の密度がバラバラであるため、うまく機能しない。
 \end{enumerate}
 
-本論文では、Sauvola と Pietaksinen(2000) の二値化技術を改良した適応的二値化技術を示す。
+本論文では、Sauvola と Pietaksinen(2000)の二値化技術を改良した適応的二値化手法を示す。
 % ストローク幅 = 文字の幅のこと？
-この手法では、ストローク幅変換を用いて、画像ピクセル間で動的にウィンドウサイズを自動的に計算する。
+本手法では、ストローク幅変換を用いて、画像ピクセル間で自動的かつ動的にウィンドウサイズを計算する。
 閾値を計算するためにピクセルの強度値を用いて特徴を抽出するウィンドウサイズは、ストローク幅変換行列に応じてピクセルごとに変化する。
 これにより、手動で調整するパラメータの数を減らすことができた。
 本論文では、第2節で提案手法、第3節で実験方法、第4節で結論についてそれぞれ述べる。
@@ -141,21 +143,25 @@ Sehadら (2019) は、劣化したテキスト画像からテキストを抽出�
 ストローク幅やテキストサイズが変化する劣化文書画像の場合、他の多くの既存二値化手法よりも優れた結果を得られる。
 
 
-\subsection{Sauvola and Pietaksinen (Sauvola)二値化法 (Sauvola と Pietaksinen, 2000)}
 
-この手法では、一定サイズの近傍ウィンドウ内の画素値の平均と標準偏差を用いて、局所閾値$𝑇$($i$, $j$) を以下のように計算する。
+\subsection{Sauvola and Pietaksinen (Sauvola)の二値化法 (Sauvola と Pietaksinen, 2000)}
 
-\begin{equation}
+この手法では、一定サイズの近傍ウィンドウ内の画素値の平均と標準偏差を用いて、局所閾値$Th(i, j)$を以下のように計算する。
+
+\begin{equation}\label{eq1}
     Th(i, j) = \mu_{ij}[1+k\times(1-\frac{\sigma_{ij}}{R}-1)]
 \end{equation}
 
-ここで、$R$ はグレー画像では128に等しい。
+ここで、$R$ はグレースケール画像では128である。
 $\mu_{ij}$は局所平均、$j$は局所標準偏差である。
-ウインドウサイズ(w)と$k$は手動で調整する2つのパラメータであり、二値化の結果はこれらのパラメータに大きく依存する。
-この手法の主な問題は、パラメータの値を正しく設定する必要があることである。
+ウインドウサイズ(w)と$k$の2つは手動で調整するパラメータであり、二値化の結果はこれらのパラメータに大きく依存する。
+この手法の主な問題は、パラメータの値を適切に設定する必要があることである。
 $k$の値は0.5、ウインドウサイズは15を推奨する。
 この手法では、ウィンドウサイズと$k$の値は画像全体に対して固定する。
 述べたように、画像内の異なる領域で異なる特性を持つ文書画像や、テキストサイズが異なる文書画像の場合、ウィンドウサイズを固定した場合は良い結果が得られない。
+
+
+\subsection{ストローク幅変換行列}\label{sec2.2}
 
 % 演算子、オペレータ、フィルタ、マスクなど
 ストローク幅変換(SWT)は、各ピクセルに対して、そのピクセルを含む最も広いストロークの幅を計算する局所的なフィルタである。
@@ -164,68 +170,129 @@ Epshteinら (2010)は、ストローク幅変換(SWT)を自然風景の画像内
 ストローク幅変換行列を求めるには、まず入力画像と同じサイズの行列で、すべての要素を$\infty$で初期化する。
 次に、Canny法によるエッジ検出によって、入力画像のエッジマップを生成する。
 エッジはストロークの境界であり、これらのストロークの幅を求める必要がある。
-そして、各エッジの画素$u$における勾配方向$g_u$を計算する。
-任意のエッジの画素$u$勾配方向$g_u$はストロークの境界の方向に対して垂直である。
-各エッジの画素$u$に対して、別のエッジの画素$v$が見つかるまで、$r = u + n \times g_u(n > 0)$の経路に沿って勾配方向へたどる。
-画素$v$での勾配方向$g_v$が、画素$u$での勾配方向$g_u$のおおよそ反対である場合、
-それぞれの経路内のピクセルについて、その経路の中での画素$u$と$v$の間の距離を、その画素のストローク幅として割り当てる。
-ただし、その画素の現在の値が、計算した値よりも小さい場合は、計算した値は無視する。
-また、エッジの画素$v$が見つからない場合、または$g_v$が$g_u$の反対ではない場合、その経路は破棄する。
+そして、各エッジのピクセル$u$における勾配方向$g_u$を計算する。
+任意のエッジのピクセル$u$における勾配方向$g_u$はストロークの境界の方向に対して垂直である。
+各エッジのピクセル$u$に対して、別のエッジのピクセル$v$が見つかるまで、$r = u + n \times g_u(n > 0)$の経路に沿って勾配方向へたどる。
+ピクセル$v$での勾配方向$g_v$が、$u$での勾配方向$g_u$のおおよそ反対である場合、
+それぞれの経路内のピクセルについて、その経路の中でのピクセル$u$、$v$間の距離を、そのピクセルのストローク幅として割り当てる。
+ただし、そのピクセルの現在の値が、計算した値よりも小さい場合は、計算した値は無視する。
+また、エッジのピクセル$v$が見つからない場合、または$g_v$が$g_u$の反対ではない場合、その経路は破棄する。
 アルゴリズムは2回適用する。
 1回目は勾配方向$g_u$を使用し、2回目は$−g_u$を使用し、明るい背景に暗いテキスト、暗い背景に明るいテキストの両方の場合を考慮に入れる。
 
-図1は、典型的なストロークとストローク幅を見つける手順を示す。
-表1と表2は、図2の$a$と$b$に対するストローク幅変換行列の値を示す。
+典型的なストロークとストローク幅を見つける手順を、図\ref{fig1}に示す。
+図\ref{fig2}の$a$と$b$に対するストローク幅変換行列の値を、それぞれ表\ref{table1}と表\ref{table2}に示す。
+
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig1.png}
+        \caption{SWTの実装 (a)典型的ストローク (b)$u$はストロークの境界線上のピクセル。$v$は$u$における勾配方向のストローク境界の反対側のピクセル。
+            (c)パスに沿った各ピクセルには、その現在値と求めたストローク幅の最小値を割り当てる(Epshteinら, 2010)。}
+        \label{fig1}
+    \end{center}
+\end{figure}
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig2.png}
+        \caption{異なるストローク幅の文字がある文書画像}
+        \label{fig2}
+    \end{center}
+\end{figure}
+
+
+
+\begin{table*}[tp]
+    \centering
+    \caption{図\ref{fig2}のaにおけるストローク幅変換行列の値}
+    \label{table1}
+    \begin{tabular}{cccccccccccc}
+        \hline
+        15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.46 & 15.46 & 15.46 & 15.46 & 15.46 & 15.46 & 15.46 \\
+        15.07 & 15.07 & 15.07 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 \\
+        12.81 & 14.87 & 14.87 & 14.87 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 \\
+        13.75 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 \\
+        13.75 & 14.42 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 15.36 & 15.36 \\
+        13.75 & 14.42 & 14.42 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 \\
+        13.75 & 14.42 & 14.42 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 \\
+        14.39 & 14.39 & 14.39 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 \\
+        14.39 & 14.39 & 14.39 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 \\
+        14.28 & 14.28 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 \\
+        15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 \\
+        15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 \\
+        15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.33 & 15.33 \\
+        15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 \\
+        15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 \\
+        14.14 & 14.87 & 14.87 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 \\
+        14.14 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 \\
+        10.00 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.46 \\
+        9.75  & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.49 \\
+        \hline
+    \end{tabular}
+\end{table*}
+
+
+\begin{table*}[tp]
+    \centering
+    \caption{図\ref{fig2}のbにおけるストローク幅変換行列の値}
+    \label{table2}
+    \begin{tabular}{cccccccccc}
+        \hline
+        10.77 & 9.75  & 9.75  & 9.75  & 10.00 & 10.00 & 10.82 & 10.15 & 10.15 & 10.15 \\
+        10.77 & 9.75  & 9.75  & 9.75  & 9.75  & 9.75  & 9.59  & 9.75  & 9.75  & 9.95  \\
+        10.77 & 9.75  & 9.90  & 9.90  & 9.90  & 9.75  & 9.75  & 9.75  & 9.75  & 9.75  \\ 
+        10.77 & 9.75  & 9.90  & 9.90  & 9.90  & 9.90  & 9.75  & 9.75  & 9.75  & 9.75  \\
+        10.77 & 9.75  & 9.90  & 9.90  & 9.90  & 9.75  & 9.75  & 9.75  & 9.75  & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 9.75  & 10.00 & 10.00 & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.34 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.34 & 9.75  & 10.00 & 10.00 & 10.00 & 9.75  & 9.59  & 10.34 & 10.82 & 10.82 \\
+        10.34 & 9.59  & 9.75  & 10.00 & 9.75  & 9.59  & 9.54  & 14.87 & 14.87 & 14.87 \\
+        \hline
+    \end{tabular}
+\end{table*}
 
 
 \subsection{Sauvola法の改良}
 
-Sauvolaの手法(Sauvola and Pietaksinen, 2000)では、パラメータであるウィンドウサイズ(W)と$k$は固定であり、特定の文書画像に対してこれら2つの変数の値を正しく設定することが不可欠である。
+Sauvola法(Sauvola and Pietaksinen, 2000)では、パラメータであるウィンドウサイズ(W)と$k$は固定であり、特定の文書画像に対してこれら2つの変数の値を正しく設定することが不可欠である。
 しかし、それぞれの文書画像に対して、手作業でこれらのパラメータの正確な値を計算し、設定することは困難である。
 また、文書画像には、様々なサイズやストローク幅のテキストが含まれている可能性がある。
 単一のウィンドウサイズは、あるサイズのテキストに対してはうまく機能するが、他のサイズに対してはうまく機能しない。
 Modified Sauvola'sと名付けた提案手法は、ストローク幅変換を用いて計算されたストローク幅に基づいて、各ピクセルの近傍サイズを自動的に計算する。
 アルゴリズムは以下の通りである:
 
-\textbf{ステップ1}
-入力画像がカラー画像であれば、グレースケール画像に変換する。
+\textbf{ステップ1:} \par
+\noindent 入力画像がカラー画像であれば、グレースケール画像に変換する。
 
-%%%%%
-%%%%%% あとで節置き換えること！！！！
-%%%%%
-%%%%
-\textbf{ステップ2}
-(2.2節で説明したように)入力画像のストローク幅変換(SWT)を計算し、SWT行列を生成する。
+\textbf{ステップ2:} \par
+\noindent (\ref{sec2.2}節で説明したように)入力画像のストローク幅変換(SWT)を計算し、SWT行列を生成する。
 
-\textbf{ステップ3}
-SWT行列を使用して、各画素のウィンドウサイズを以下のように自動的に計算する：
+\textbf{ステップ3:} \par
+\noindent SWT行列を使用して、各画素のウィンドウサイズを以下のように自動的に計算する：
 
-\begin{equation}
+\begin{equation}\label{eq2}
     W(i, j) = 4 \times SW(i, j) + 1
 \end{equation}
 
-%%%%
-%%%%%% あとで式番号置き換えること！！！！
-%%%%%
-%%%%
-実験的には、式(2)で与えられるウィンドウサイズが最良の結果となる。
-位置$(i, j)$の画素のウインドウサイズ$W(i, j) \times W(i, j)$を閾値の計算に用い、画像内の各画素で異なります。
+実験的には、式\ref{eq1}で与えられるウィンドウサイズが最良の結果となる。
+位置$(i, j)$の画素のウインドウサイズ$W(i, j) \times W(i, j)$を閾値の計算に用い、同画像内の各ピクセルで異なる。
 
-%%%%
-%%%%%% あとで式番号置き換えること！！！！
-%%%%%
-%%%%
-\textbf{ステップ4}
-位置$(i, j)$の画素の閾値を、ステップ3と式(1)からそのピクセルのウィンドウサイズを用いて推定する（Sauvola法と同じ）。
+\textbf{ステップ4:} \par
+\noindent 位置$(i, j)$の画素の閾値を、ステップ3と式\ref{eq2}からそのピクセルのウィンドウサイズを用いて推定する（Sauvola法と同じ）。
 
 
 
 \section{実験結果}
 
-実験は、DIBCOベンチマークデータセットDIBCO-2009(Anon, 0000a)、HDIBCO-2010(Anon, 0000b)、
-DIBCO-2011(Anon, 0000c)、HDIBCO-2012(Anon, 0000d)、HDIBCO-2016(Anon, 0000e)、
-およびDIBCO-2017(Anon, 0000f)から選択した劣化文書画像に対して行う。
-これらのデータセットには、様々な実際の劣化文書画像と、それに対応する半自動生成したグラウンドトゥルースを含む。
+実験は、DIBCOベンチマークデータセットDIBCO-2009(Anon, 0000a)\cite{bib26}、HDIBCO-2010(Anon, 0000b)\cite{bib27}、
+DIBCO-2011(Anon, 0000c)\cite{bib28}、HDIBCO-2012(Anon, 0000d)\cite{bib29}、HDIBCO-2016(Anon, 0000e)\cite{bib30}、
+およびDIBCO-2017(Anon, 0000f)\cite{bib31}から選択した劣化文書画像に対して行う。
+これらのデータセットには、様々な実際の劣化文書画像と、それに対応する半自動生成したグラウンド・トゥルースを含む。
 本節では、定量的な実験結果とOCRに基づく実験結果について述べる。
 提案手法を既存の9つの適応的二値化手法と比較する:
 Otsu (1979)、Bernsen (1986)、Niblack (1986)、Wellner (1993)、
@@ -240,503 +307,372 @@ Otsu法は大域的二値化手法であり、他の手法は適応的二値化�
 % 画像がどれだけ劣化をしたかを示す値。値が小さいほど劣化していて、大きいほど元の画像に近い。
 F値(FM)、ピーク信号対雑音比(PSNR)、
 % 画像処理タスクにおける背景の誤検出率を評価する指標。通常は、背景と誤って認識された前景領域の割合を示す。
-負率指標(Negative Rate Metric, NRM)、
-
-誤分類ペナルティメトリック(isclassification penalty metric, MPM)、
-
-距離相互歪みメトリック(Distance Reciprocal Distortion Metric, DRD)
-
-これらの評価指標は、国際文書画像二値化コンテスト(Gatosら, 2009; Pratikakisら, 2016, 2017)
+負率メトリック(Negative Rate Metric, NRM)、
+誤分類ペナルティメトリック(Misclassification penalty metric, MPM)、
+距離相互歪みメトリック(Distance Reciprocal Distortion Metric, DRD)。
+% 文書解析と認識に関する国際会議 ICDAR
+% ICDAR2015は、風景写真中のテキスト領域にアノテーションされた1000枚のトレーニング画像と500枚のテスト画像
+これらの評価指標は、国際的文書画像の二値化結果の比較(Gatosら, 2009; Pratikakisら, 2016, 2017)
 で提案されたICDARベンチマーク評価指標から採用した。
+これらの評価指標は、取得した二値画像とグラウンド・トゥルースの画像との類似度を定義する。
 
+\textbf{FM}は適合率(PR)と再現率(RC)を組み合わせ、総合的に二値化精度を決定する。
+適合率(PR)は二値画像でのノイズを、再現率(RC)はテキスト本文の精度をそれぞれ示す。
+これら3つの値が高いほど、出力する二値画像($I_B$)が理想的な二値画像($I_{GT}$)に近いことを示す。
 
-
-
-
-
-
-
-
-
-
-
-現在の技術を用いた認識処理には、低照度である、霞んでいる、雨が降っているといった屋外環境での撮影や、画像の向き、撮影時の手の影の反射がある画像など、いくつかの障害がある。
-この処理を最適化するため、入力に対して優れた前処理~\cite{bib1}を適用し、テキスト認識出力に対して後処理~\cite{bib2}を適用するという2つの処理を実行する。
-
-テキスト認識処理は Tesseract-OCR による Optical Character Recognition (OCR, 光学式文字認識) アルゴリズムを使用している。
-Tesseract-OCRアルゴリズムは、入力として良質で鮮明なスキャン文書や画像に対して高精度である。
-そのため、OCR処理~\cite{bib1}が期待通りの出力を得られるような高精度な画像を生成するためには、適切な前処理方法が必要であり、それは優れた後処理アルゴリズムによってもサポートされる。
-
-多くの研究で、OCR精度を高めるために入力画像に前処理を加えている。
-Bieniecki, Grabowski, Rozenberg~\cite{bib1}氏はデジタルカメラで撮った写真を使用し、画像の前処理に焦点を当てた手法を提案した。
-この手法は、OCRのための前処理技術として、テキスト領域の方向を調整するものである。
-これらの処理は、画像をグレースケール化、閾値処理を施し画像を二値化、エッジ検出として Sobel を使用、モルフォジー変換(膨張、縮小、オープニング処理、クロージング処理、トップハット変換)を適用し、大津の二値化を適用して画像を二次元の強度関数で表現し、テキスト領域とセグメンテーションで構成される前処理を行う。
-Akhter, Bhuiyan, Uddin~\cite{bib5}氏は、OCR処理においても画像補正と背景除去を用いている。
-
-この手法では、既に大津の二値化によって二値化された画像を補正するために、非常にシンプルなスポット除去を使用している。
-そのため、ノイズのある画像に対しては最適なOCR精度で出力することはできない。
-Soeseno と Liliana~\cite{bib6}氏 および Thanh と Trong~\cite{bib7}氏によって提案されたセグメンテーション方法に基づき、IDカード画像のOCR精度を向上させる手法もあるが、この手法は適切な角度で撮影された高品質な画像に限定されている。
-
-lan 氏らは、近年の深層学習における重要な課題となっている画像の補正に関して、Generative Adversarial Network(GAN, 敵対的生成ネットワーク)と呼ばれる構想を紹介した~\cite{bib8}。
-Lat と Jawahar~\cite{bib9}氏、Su~\cite{bib10}氏ら、およびKong と Wang~\cite{bib11}氏は、GANベースの画像前処理を適用し Tesseract-OCR の精度を向上させる手法を提案した。
-これにより、白い背景をもつ文書テキスト画像に解像度強化を行う。
-ただし、この方法ではIDカードや携帯電話のカメラで撮影された画像など、より複雑なテキスト画像のデータセットには適していない。
-さらに、以前の研究では、OCR処理のための画像解像度を向上させるためにGANによる前処理も、特定のデータセットに対して限定されていた。
-
-私達はGANを含む他の前処理を組み合わせて使用することで、より広いデータセットをカバーし、テキスト画像がスキャンされた文書画像だけでなく、複雑な背景が写るRAW画像にも適用可能であると考えている。
-したがって、この論文の貢献には、機械学習に基づいた前処理における画像品質向上のための手法が含まれている。
-この手法は、二値化、ぼかし除去、陰影除去を組み合わせた技術を使用している。
-ぼかし除去にはDeblurGANを使用し、損失関数としてワッサーシュタイン損失を利用した。
-また、インドネシアのIDカードにおける Tesseract-OCR の出力を改善するための新たな後処理アルゴリズムである。
-私達のデータセットは、携帯電話のカメラを使用して異なる照明状況と異なる環境でキャプチャされたインドネシアのIDカードである。
-
-
-
-\section{関連研究}
-
-過去数年間、OCRを使用したテキスト画像認識は、研究者にとって非常に重要な分野となっている。
-Tesseract, ABBYY FineReader, HANWANG など、どのOCRツールを使用しているかどうかにかかわらず、OCRの精度を向上させるため、多くの手法が提案されてきた。
-A, N ~\cite{bib12}氏は、ローカルな明るさとコントラストの調整方法によって画像の前処理を行う手法を提案した。
-これにより、明るさの変動や画像の不規則な照度分布を効果的に扱うことが可能である。
-また、最適化されたグレースケール変換アルゴリズムを活用し、ドキュメント画像をグレースケールに変換する。
-最後に、アンシャープマスキングによって生成されたグレースケール画像の有用な情報を鮮鋭化する。
-最適なグローバル二値化手法も使用されており、OCR認識のための最終的なドキュメント画像の準備を行う。
-Bieniecki, Grabowski, Rozenberg~\cite{bib1}氏は、デジタルカメラの画像を使用し、画像の前処理に焦点を当てた手法も提案した。
-この手法では、OCRのための前処理技術として、画像のテキスト領域の方向を調節するものである。
-
-Akhter, Bhuiyan, Uddin~\cite{bib5}氏も、OCR処理において画像の補正と背景除去を用いた。
-この方法では、既に大津の二値化によって二値化された画像を補正するために、非常にシンプルなスポット除去を使用している。
-2019年には、Satyawan~\cite{bib4}氏らも、OCR処理において画像処理の組み合わせを適用した。
-これらの処理は、画像をグレースケール化、閾値処理を施し画像を二値化、エッジ検出としてSobelを使用、モルフォジー変換(膨張、縮小、オープニング処理、クロージング処理、トップハット変換)を適用し、大津の二値化を適用して画像を二次元の強度関数で表現し、テキスト領域とセグメンテーションで構成される前処理を行う。
-Thanh と Trong~\cite{bib7}氏は、ベトナムのIDカードを対象としたOCRに焦点を当てた手法を提案した。
-この手法では、画像構造を分析し、前処理を適用する。
-前処理には、傾きの調整、ノイズのフィルタリング、背景除去、カラーチャネルの分析、連結成分の分析、マスクラインの作成、表の構造分析、および二値画像が含まれている。
-
-Shen, Lei~\cite{bib13}氏も背景除去手法を提案しており、輝度と色調をコントラストパラメータとして使用し、ドキュメント画像を補正している。
-Soeseno と Liliana~\cite{bib6}氏は、インドネシアの国民IDカードのOCR処理のためのセグメンテーション手法を提案した。
-国民IDカードの領域は、各ピクセルにおける色の青さで決定される。
-次に、Canny エッジ検出を用いて、国民IDカードのエッジをマークし、後にエッジを太くするために膨張処理を行う。
-次に、画像を二値画像に変換し、各エッジを12分割後、エッジをマークする線を引く。
-Vamvakas, Gatos, Stamatopoulos, Perantonis~\cite{bib14}氏は、歴史的な印刷物または手書き文書に対する完全なOCR手法を提案した。
-この手法は、画像の二値化と補正を含み、認識プロセスのためにテキスト行、単語、文字をデータベースに保存する前処理段階、テキスト行、単語、文字を検出するためのトップダウンセグメンテーション手法、認識処理の一部として使用されるセグメンテーション手法を適用している。
-2015年には、Hartanto, Sugiharto~\cite{bib15}氏がOCRのためのテンプレートマッチング相関アルゴリズムを使用する手法を提案した。
-この手法では、アルゴリズムを適用する前に、入力画像を二値化、セグメンテーション、および正規化する前処理が行われる。
-
-Llobet, Navarro-Cerdan, Perez-Cortes, Arlandis~\cite{bib2}氏は、後処理の手法も提案した。
-Llobet~\cite{bib2}氏らは、OCR処理の前にある画像の前処理に焦点を当てるのではなく、OCRの結果の後処理に焦点を当てた。
-事後クラス確率のベクトル列を利用して、WFST (Weighted Finite-State Transducers, 重み付き有限状態トランスデューサ) を構築し、その後、エラーモデルと言語モデルの独立したWFSTと組み合わせた。
-Lat と Jawahar~\cite{bib9}氏によって、敵対的生成ネットワーク (GAN) に基づいた手法も提案された。
-ドキュメント画像に焦点を当てた Lat と Jawahar 氏は、Super-Resolution Generative Adversarial Network (SRGAN, 超解像敵対的生成ネットワーク) に基づいて生成された超解像度画像を前処理として使用し、OCR精度を向上させる。
-Lat と Jawahar~\cite{bib9}氏と同様に、Su~\cite{bib10}氏らもテキスト画像の解像度を向上させるための手法を提案した。
-この手法は、Conditional Generative Adversarial Network (cGAN, 条件付き敵対的生成ネットワーク) を使用した敵対的生成ネットワーク (GAN) をOCR処理に適用し、Kong と Wang~\cite{bib11}氏もSRGANを使用したGANベースの画像前処理を適用して、Tesseract-OCRの精度を向上させる手法を提案した。
-
-本論文は、入力画像の前処理と後処理により、インドネシアのIDカードを対象とし、Tesseract-OCR の精度向上に焦点を当てている。
-過去に提案された敵対的生成ネットワーク (GAN)~\cite{bib9}~\cite{bib10}~\cite{bib11} に基づく手法は、Tesseract-OCR に対して明瞭な画像を生成するための前処理画像として、非常に信用性がある。
-したがって、GAN 手法を含む前処理技術の組み合わせを利用し、画像の品質を向上させたいと考えている。
-最後に、シンプルな後処理技術を使用して、インドネシアのIDカードの解析を目的として、Tesseract-OCR の精度向上のために正規表現を行う。
-
-
-
-\section{提案手法}
-
-私達の提案は、前処理、Tesseract を使用した文字認識、後処理の三段階で構成されている。
-前処理の段階では、入力画像の品質を向上させるために、様々な前処理技術の組み合わせを適用する。
-主に適用する3つの技術は、ぼかし除去、陰影除去、二値化である。
-
-\begin{figure}[t]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/Figure1.png}
-        \caption{ぼかし除去前と処理後: (a)ぼかし除去前 (b)ぼかし除去後}
-        \label{fig:Figure1}
-    \end{center}
-\end{figure}
-
-過去数年間、画像品質を向上させるための機械学習手法である敵対的生成ネットワーク (GAN)~\cite{bib8} による DeblurGAN と呼ばれるぼかし除去手法に関する Kupyn, Budzan, Mykhailych Mishkin, Matas~\cite{bib16}氏による手法に興味を持った。
-DeblurGAN は、モーションブラーのための End-to-End の学習手法であり、条件付きGAN (cGAN) とコンテンツ損失に基づいている。
-この手法では、WGAN-GP~\cite{bib17} を勾配ペナルティと知覚損失によって、評価(WGAN-GPの識別器)関数として使用している。
-WGAN-GPを使用することで、学習過程がより安定する。
-DeblurGAN の識別器は、ストライド 1/2 の2つの畳み込みブロック、9つの残差ブロック (ResBlocks)、2つの転置畳み込みブロックで構成されている。
-各残差ブロックには、畳み込み層、インスタンス正規化層、ReLUアクティベーションを含んでいる。
-本論文では、DeblurGAN を利用してぼかし除去を行っており、\ref{sec:Experiment}で詳細に説明する。
-筆者から提供された事前学習済みモデルを使用し、損失関数として WGAN~\cite{bib17} のワッサーシュタイン損失を用いた。
-データセットに DeblurGAN を適用した結果を図\ref{fig:Figure1}に示す。
-
-\begin{figure}[t]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/Figure2.png}
-        \caption{ぼかし除去前と陰影除去後: (a)ぼかし除去前 (b)陰影除去後}
-        \label{fig:Figure2}
-    \end{center}
-\end{figure}
-
-本論文にて使用したデータセットは、携帯電話のカメラで撮影されており、照明条件が異なるため、画像には多くの反射が含まれている。
-このような画像の品質を向上させるため、画像のぼかし除去を行った後に陰影除去を適用した。
-まず、画像のチャネルをそれぞれ個々の平面に分割し、平面に対して膨張とメディアンフィルタによるノイズ除去を施し、画像を平滑化する。
-その後、各平面での欠如を計算するため、255から平面とぼかし画像の絶対値を減算する。
-このステップの最後に正規化を行い、配列に追加して、全平面を1つの画像として結合する(図\ref{fig:Figure2})
-
-最後に、二値化では、異なる3つの閾値処理手法を使用した。
-TRUNC閾値処理、TOZERO 閾値処理、 A\&N~\cite{bib12}氏、Akhter~\cite{bib5}氏ら、Satyawan~\cite{bib4}氏らによって示された、大津の二値化を行った。
-これらは画像の二値化において、より良い結果を出力するとされている。
-TRUNC閾値処理では、画素値が閾値以下の値は変更されず、閾値以上の値は閾値の値に設定され、以下のように表される。
-
-\begin{equation}
-    \text{dst(x,y)} =
-    \left\{
-    \begin{array}{ll}
-        \text{maxval}   & \text{if scr(x,y)} > \text{thresh} \\
-        \text{scr(x,y)} & \text{otherwise}
-    \end{array}
-    \right.
+\begin{equation}\label{eq3}
+    FM = \frac{2 \times RC \times PR}{RC + PR}
 \end{equation}
 
-TOZERO閾値処理では、画素値が閾値以下の値は0に設定し、閾値以上の値は変更されず、以下のように表される。
+$PR = \frac{N_{TT}}{N_{FT} + N_{TT}}$、$RC = \frac{N_{TT}}{N_{FNT} + N_{TT}}$とする。
 
-\begin{equation}
-    \text{dst(x,y)} =
-    \left\{
-    \begin{array}{ll}
-        \text{src(x,y)} & \text{if scr(x,y)} > \text{thresh} \\
-        0               & \text{otherwise}
-    \end{array}
-    \right.
+ここで、$N_{TT}$は真のテキストピクセルの数、$N_{FT}$は偽のテキストピクセルの数、$N_{FNT}$は偽の非テキストピクセルの数である。
+
+\textbf{PSNR}は出力結果が理想的な二値画像に近いかどうかを測定する指標である。
+PSNRの値が高いほど、二値化の品質が良いことを示す。
+
+\begin{equation}\label{eq4}
+    PSNR = 10 \times \log (\frac{D^2}{MSE}),
 \end{equation}
 
-\begin{figure}[t]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/Figure3.png}
-        \caption{異なる閾値処理による二値化: (a)陰影除去後 (b)TOZERO閾値処理 (c)大津の二値化}
-        \label{fig:Figure3}
-    \end{center}
-\end{figure}
+$D$は画像のコントラストである。二値画像の場合、$D$の値は1とする。$MSE$は、平均二乗誤差である。
 
-大津の二値化は、画像の二値化において、適応的閾値処理となっている。
-画素値が0から255までの範囲で、大津の二値化は最適な閾値を見つけるため、クラス間分散(またはクラス内分散)を計算して評価する。
-画素を二値化した結果は、図\ref{fig:Figure3}で示されている。
-
-
-\begin{table*}[hbtp]
-    \caption{画像処理の結果}
-    \label{tb:Table1}
-    \centering
-    \begin{tabular}{|l|l|l|}
-        \hline
-                                       & \multicolumn{1}{c|}{\textbf{Dataset 1}} & \multicolumn{1}{c|}{\textbf{Dataset 2}} \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{Ground}\\\textbf{Truth}\end{tabular} & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT", \\"1": "KOTA BANDUNG",\\"NIK": "3273041508720012", \\"nama": "NANANG KOSIM", \\"tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\"jenis\_kelamin": "LAKI-LAKI",\\"gol\_darah": "-", \\"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\"rt\_rw": "007/005",\\"kel\_desa": "KOPO", \\"kecamatan": "BOJONGLOA\\KALER",\\"agama":"ISLAM",\\"status\_perkawinan": "KAWIN", \\"pekerjaan": "WIRASWASTA", \\"kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR HIDUP" \\\}\end{tabular}          & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT", \\"1": "KOTA BANDUNG", \\"NIK": "3273041504780013", \\"nama": "ADI ROHMAWAN", \\"tempat\_tanggal\_lahir":"SRAGEN, 15-\\04-1978",\\"jenis\_kelamin":"LAKI-LAKI",\\"gol\_darah": "-",\\"alamat":"JL.KOPO GG.LAPANG",\\"rt\_rw": "009/004",\\"kel\_desa":"KOPO",\\"kecamatan":"BOJONGLOA KALER",\\"agama": "ISLAM",\\"status\_perkawinan": "KAWIN",\\"pekerjaan": "WIRASWASTA", \\"kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR HIDUP"\\\}\end{tabular}          \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}\textbf{OCR Output}\\\textbf{using}\\\textbf{Pytesseract}\end{tabular} & \begin{tabular}[l]{p{6cm}}PROVINSI JAWA BARAT\\KOTA BANDUNG\\NIK : 32730415087?20012 \\Nama INANANG KOSIM\\TempatTgi Lahir : BANDUNG, 15-08-\\1972\\Jenis kelamin : LAKI-LAKI\\Gol. Darah :-\\Alamat : JL.KOPO\\GG.PANYILEUKAN\\RTRW :007/005\\KeVDesa :KOPO\\Kecamatan: BOJONGLOA KALER\\Agama: ISLAM\\Status Perkawinan: KAWIN\\Pekerjaan :WIRASWASTA\end{tabular}          & \begin{tabular}[l]{p{6cm}}PROVINSI JAWA RAPAT\\KOTA BANDUNG\\NIK: 3073041508 ?80053\\Nam3 ADI ROHMAWAN\\Tempat yisne SRAGEN, 1S Oa 1573\\us Kemasan AKG LAKI Gor Daan\\Mam 1 KOPO GG LAPANG\\87 02006\\KecTarsa OPO\\meramatn — BOJONGIOAXAIFR\\Dalan ISLAM\\Sisam Penaunnan KAWIN\\Senarman .WARASWASTA\\Kema ganegaraso. WNI\end{tabular}          \\
-        \hline
-    \end{tabular}
-\end{table*}
-
-\begin{table*}[hbtp]
-    \centering
-    \begin{tabular}{|l|l|l|}
-        \hline
-                                                     & \begin{tabular}[l]{@{}l@{}}Kewarganegaraan: WNI\\Berlaku Hingga: SEUMUR HIDUP\end{tabular}       & \begin{tabular}[l]{@{}l@{}}Berak Hingga SEUMUR HIDUP\\be .\end{tabular}        \\ 
-        \hline        \begin{tabular}[c]{@{}l@{}}\textbf{Key-Value}\\\textbf{Pairs}\\\textbf{Extracted}\end{tabular} & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA BARAT",\\"1": "KOTA BANDUNG",\\"NIK": "3273041508720012",\\"nama": "INANANG KOSIM", "tempat\_tanggal\_lahir": "BANDUNG,\\15-08-1972",\\"jenis\_kelamin": "LAKI-LAKI",\\"gol\_darah": "-",\\"alamat": "JL.KOPO\\GG.PANYILEUKAN",\\"rt\_rw": "007/005",\\"kel\_desa": "KOPO",\\"kecamatan":"BOJONGLOA\\KALER",  "agama": "ISLAM", "status\_perkawinan": "KAWIN",\\"pekerjaan": "WIRASWASTA",\\ "kewarganegaraan": "WNI", \\"berlaku\_hingga":"SEUMUR\\HIDUP"\\\}\end{tabular}       & \begin{tabular}[l]{p{6cm}}\{\\"0": "PROVINSI JAWA RAPAT",\\"1": "KOTA BANDUNG",\\"NIK": "307304150880053",\\"nama": "N ADI ROHMAWAN", \\"tempat\_tanggal\_lahir": "Tempat yisne SRAGEN, 1S Oa 1573",\\"jenis\_kelamin": "LAKI-LAKI",\\"gol\_darah": "-",\\"alamat":"M 1 KOPO GG LAPANG",\\"rt\_rw": "87 02006",\\"kel\_desa":"KT OPO",\\"kecamatan":"BOJONGIOAXAIFR",\\"agama": "ISLAM",\\"status\_perkawinan": "KAWIN", \\"pekerjaan": "S WARASWASTA",\\"kewarganegaraan": "WNI",\\"berlaku\_hingga":"SEUMUR HIDUP"\\\} \end{tabular}        \\
-        \hline
-        \textbf{\textbf{CER}}                        & \multicolumn{1}{c|}{\textbf{0.58\%}} & \multicolumn{1}{c|}{\textbf{29.70\%}} \\
-        \hline
-    \end{tabular}
-\end{table*}
-
-その後、画像は Pytesseract (Python Tesseract バージョン 5.0.0 アルファ) を使用してテキストを抽出する。
-このテキストは表\ref{tb:Table1}にて表されている。
-Pytesseract (Python Tesseract) は、Pythonを使用してOCRを実行するためのツールである。
-これは、オープンソースであるOCRエンジン Tesseract-OCR のラッパーであり、もとは1985年に Hewlett Packard によって開発された~\cite{bib3}。
-Tesseract-OCR は現在、Google によって Apache 2.0 ライセンスの下でメンテナンスされており~\cite{bib3}、最も正確かつ広く使用されているOCRエンジンの1つとされている~\cite{bib18}。
-
-Pytesseract で結果を取得した後、抽出結果を行ごとに分割し、正規表現としてキーと値のペアを抽出する。
-限られた種類のコンテンツを含む領域(例:"Agama", "Jenis Kelamin", "Golongan Darah", "Kewarganegaraan", "Status", "Berlaku Hingga") については、Regex.search を使用した。
-Regex.serach が一致する値を見つけられなかった場合、文字列をコロンで分割する。
-また、同様に Tesseract によって検出された他の領域のキーと値もコロンで分割する。
-コロンが含まれていない場合、Regex に一致する値で文字列を分割し、最後の配列を取得する。
-Regex が失敗し、文字列にコロンが含まれていない場合、最初に検出した文字列を配列のインデックスに基づいて返す。
-その後、各領域の値を処理し、余分なスペース、小文字の文字、記号、句読点を削除するが、": . ," はIDカードのコンテンツの一部であるため、削除しない。
-例えば、"NIK" 領域の値は数字のみを含むようにフィルタリングし、"Tempet / Tgl Lahir" 領域の値は余分なスペース、小文字の文字、記号、句読点を削除するが、この領域はフォーマットの一部であるため、": , -" は保持しておく。
-結果の例は、表\ref{tb:Table1} にある。
-
-
-
-\section{実験}\label{sec:Experiment}
-
-
-\subsection{データセット}
-
-\begin{figure}[t]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/Figure4.png}
-        \caption{異なる条件のデータセット: (a)正面からの視点でない (b)手の影の反射がある (c)手の写りこみがある (d)テキスト領域に光の反射がある (e)影の反射 (f)画像にぼやけがある}
-        \label{fig:Figure4}
-    \end{center}
-\end{figure}
-
-\begin{figure}[t]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/Figure5.png}
-        \caption{画像処理前の結果: (a)元画像 (b)該当箇所のマスキング後 (c)二値画像 (d)陰影除去、二値化 (e)ぼかし除去(DeblurGAN)、二値化 (f)ぼかし除去(DeblurGAN)、陰影除去、二値化}
-        \label{fig:Figure5}
-    \end{center}
-\end{figure}
-
-本論文で使用したデータセットには、100枚のインドネシアのIDカードが含まれており、これらは携帯電話のカメラで撮影され、実験の目的でのみ使用した。
-図\ref{fig:Figure4}に示すように、データセットの画像にはIDカードだけではない(顔、手の影の反射、ブロブ、異なる照明条件などを含む)。
-そのため、これらの画像を$\text{600} \times \text{400}$に整形し、IDカードのみを含むように調整した。
-次に、画像から検出された主要な色を使用し、IDカードの右側にある証明写真、都市名、日付、署名欄をマスキングした。(図\ref{fig:Figure5}(b))
-このマスキング処理は、Tesseract-OCR の結果を改善するために使用しており、必要な情報であるテキストのみを検出できるようにした。
-
-
-\subsection{実験計画}
-
-
-\begin{table*}[htbp]
-    \centering
-    \caption{前処理技術の組み合わせ}
-    \label{tb:Table2}
-    \begin{tabular}{|l|l|}
-        \hline
-        \multicolumn{1}{|c|}{\textbf{Technique}} & \multicolumn{1}{c|}{\textbf{Description}} \\ 
-        \hline
-        \textit{Original}                        & \begin{tabular}[c]{@{}l@{}}We rectified the input image into 600x400 and masked it in the area of the right \\ side of Indonesian ID card which contains profile picture, city name, date, and \\ signature into blue color.\end{tabular}            \\ 
-        \hline
-        \textit{Binarization}                    & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we binarized it. We tried 3 different thresholding, which are TRUNC,\\TOZERO, and OTSU.\end{tabular}            \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{Shadow removal}\\+ \textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied shadow removal and binarized it using 3 different approaches\\(TRUNC, TOZERO, and OTSU).\end{tabular}            \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{Deblurring} +\\\textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied DeblurGAN~\cite{bib16} and binarized it using 3 different approaches\\(TRUNC, TOZERO, and OTSU).~ ~~\end{tabular}            \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}\textit{Deblurring} +\\\textit{Shadow removal}\\+ \textit{Binarization}\end{tabular}           & \begin{tabular}[c]{@{}l@{}}We rectified and masked the input image using the same technique as the original,\\and then we applied DeblurGAN~\cite{bib16}, shadow removal, and binarized it using 3 \\different approaches (TRUNC, TOZERO, and OTSU).~ ~~\end{tabular}            \\
-        \hline
-    \end{tabular}
-\end{table*}
-
-OCR処理を施す前に、入力画像に対して5つの異なる前処理技術の組み合わせを適用し、各組合せを評価した。
-前処理の結果は、図\ref{fig:Figure5}で示している。
-全ての二値化処理には、TRUNC閾値処理、TOZERO閾値処理、大津の二値化の3つの異なる閾値処理を使用した。
-TRUNC閾値処理では、100から250の範囲で閾値処理を適用した。
-その結果、画像ごとに最適な閾値として、200と215が示された。
-TOZERO閾値処理では、127を閾値としたところ、最良の結果が示された。
-前処理技術の詳細な手順は、表\ref{tb:Table2}に示している。
-
-次に、Tesseract-OCR で画像処理を行った後に、後処理アルゴリズムを適用した。
-後処理の結果は、テキストファイルにエクスポートされる。
-最後に、各画像の CER(Characters Error Rate, 文字誤り率) を計測した。
-これは、抽出された出力値をその正解(ground truth)と比較して計算している。
-CERは、正解を出力に変換するために必要な最低限の操作回数として計算される。
-CERは、以下のように定義されている。
-
-\begin{equation}
-    \text{CER} =
-    \frac{i + s + d}{n} \times 100 \%
+\begin{equation}\label{eq5}
+    MSE = \sum_{i=1}^M \sum_{j=1}^N \frac{ (I_B(i, j) - I_{GT}(i, j))^2 }{MN}
 \end{equation}
 
-\begin{table*}[htbp]
+$I_B(i, j)$は理想的な二値画像の画素値、$I_{GT}(i, j)$は同ピクセルにおける理想的な画素値をそれぞれ示す。
+
+\textbf{NRM}は、$I_{GT}$と$I_B$の間のピクセル非類似率を測定する。
+$NRM$の値が低いほど、二値化が適切であることを示す。
+
+\begin{equation}\label{eq6}
+    NRM = \frac{P + Q}{2}
+\end{equation}
+
+ここで、
+\begin{equation}\label{eq7}
+    P = \frac{N_{FNT}}{N_{FNT} + N_{TT}},
+\end{equation}
+
+\begin{equation}\label{eq8}
+    Q = \frac{N_{FT}}{N_{FT} + N_{TNT}}
+\end{equation}
+である。
+
+\textbf{MPM}は、以下のように定義されている。
+
+\begin{equation}\label{eq9}
+    MPM = \frac{ \sum_{i=1}^{C_{FNT}} d_{FNT}^i + \sum_{j=1}^{C_{FT}} d_{FT}^j }{2D}
+\end{equation}
+
+ここで、$d_{FNT}^i$は偽の非テキストの距離を表し、
+$d_{FT}^j$は$j$番目の偽のテキストピクセルについて、グラウンド・トゥルースにおけるテキスト輪郭からの距離を表す。
+正規化係数$D$は、グラウンド・トゥルースのすべてのピクセルからテキスト輪郭までの距離の総和である。
+この指標は、出力した二値画像がどれだけのグラウンド・トゥルースの輪郭を表現しているかを表す。
+$MPM$の値が小さいほど、二値化アルゴリズムの質が高いことを示す。
+
+\textbf{DRD}は二値化した文書画像の視覚的な歪みを測定する指標であり、Luら(2004)によって導入された。
+この指標は、画像に対する人間の視覚的知覚と手法の性能の間に相関があることを示す。
+
+上記のすべてのデータセットを用いた提案手法と、Sauvola法の平均定量結果を、表\ref{table3}に示す。
+表\ref{table3}の定量的結果と図\ref{fig3}、図\ref{fig4}、図\ref{fig5}の視覚的結果から、すべての種類の劣化画像(機械印刷と手書き)に対して、
+提案手法がSauvola法よりも良い結果を示すことがわかる。
+
+
+\begin{table*}[tp]
     \centering
-    \caption{あるデータセットにおけるCERの計算}
-    \label{tb:Table3}
-    \begin{tabular}{|c|c|}
-        \hline
-        \textbf{Ground truth}                                & \textbf{Output}                                     \\ 
-        \hline
-        \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}\{\\~"0": "\textbf{PROVINSI JAWA BARAT}",\\~"1": "\textbf{KOTA BANDUNG}",\\~"NIK": "\textbf{3273041508720012}",\\~"nama": "\textbf{NANANG KOSIM}", \\~"tempat\_tanggal\_lahir":~ "\textbf{BANDUNG, 15-08-}\\\textbf{1972}", \\~"jenis\_kelamin": "\textbf{LAKI-LAKI}", \\~"gol\_darah": "\textbf{-}", \\~"alamat":~ "\textbf{JL.KOPO GG.PANYILEUKAN}", \\~"rt\_rw": "\textbf{007/005}", \\~"kel\_desa": "\textbf{KOPO}", \\~"kecamatan": "\textbf{BOJONGLOA KALER}", \\~"agama": "\textbf{ISLAM}", \\~"status\_perkawinan": "\textbf{KAWIN}", \\~"pekerjaan": "\textbf{WIRASWASTA}", \\~"kewarganegaraan": "\textbf{WNI}", \\~"berlaku\_hingga": "\textbf{SEUMUR HIDUP}" \\\}\end{tabular}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}\{\\~"0": "\textbf{PROVINSI JAWA BARAT}",\\~"1": "\textbf{KOTA BANDUNG}",\\~"NIK": "\textbf{3273041508720012}", \\~"nama": "\textbf{INANANG KOSIM}",\\~"tempat\_tanggal\_lahir": "\textbf{BANDUNG, 15-08-}\\\textbf{1972}", \\~"jenis\_kelamin": "\textbf{LAKI-LAKI}",\\~"gol\_darah": "\textbf{-}",\\~"alamat": "\textbf{JL.KOPO GG.PANYILEUKAN}",\\~"rt\_rw": "\textbf{007/005}",\\~"kel\_desa": "\textbf{KOPO}",\\~"kecamatan": "\textbf{BOJONGLOA KALER}",\\~"agama": "\textbf{ISLAM}",\\~"status\_perkawinan": "\textbf{KAWIN}",\\~"pekerjaan": "\textbf{WIRASWASTA}",\\~"kewarganegaraan": "\textbf{WNI}",\\~"berlaku\_hingga": "\textbf{SEUMUR HIDUP}"\\\}\end{tabular}} \\ 
-        \hline
-        \multicolumn{2}{|l|}{\begin{tabular}[c]{@{}l@{}}\textbf{Calculation}\\\\Insert (i) : 0\\Delete (d) : 1\\Substitude (s) : 0\\Number of characters in the ground truth (n) : 171 \\\\ $\text{CER} = \frac{0 + 1 + 0}{171} \times 100\% = 0.58\%$ \\ \end{tabular}}                                                       \\
-        \hline
+    \caption{異なるデータセットを用いたSauvolaと提案手法の定量的比較}
+    \label{table3}
+    \begin{tabular}{cccccccccc}
+        \toprule
+                           &  & \multicolumn{2}{c}{DIBCO-2009 PR} & \multicolumn{2}{c}{DIBCO-2009HW} & \multicolumn{2}{c}{DIBCO-2011PR}                                 \\
+                           &  & Sauvola                           & Proposed                         & Sauvola                          & Proposed & Sauvola & Proposed \\
+        \midrule
+        FM\%               &  & 68.69                             & 85.39                            & 51.13                            & 64.68    & 67.76   & 77.39    \\
+        Recall \%          &  & 53.77                             & 75.47                            & 40.84                            & 54.94    & 52.19   & 64.74    \\
+        Prec.\%            &  & 99.32                             & 98.84                            & 97.41                            & 95.21    & 99.70   & 98.96    \\
+        PSNR               &  & 11.89                             & 14.51                            & 15.48                            & 16.34    & 12.48   & 13.85    \\
+        NRM                &  & 23.15                             & 12.34                            & 29.60                            & 22.60    & 23.91   & 17.66    \\
+        MPM ($\times1000$) &  & 2.57                              & 1.05                             & 0.45                             & 0.38     & 0.88    & 0.63     \\
+        DRD                &  & 12.06                             & 7.18                             & 10.95                            & 8.63     & 9.82    & 6.57     \\
+        \midrule
+                           &  & \multicolumn{2}{c}{DIBCO-2011 HW} & \multicolumn{2}{c}{HDIBCO-2016}  & \multicolumn{2}{c}{DIBCO-2017}                                   \\
+                           &  & Sauvola                           & Proposed                         & Sauvola                          & Proposed & Sauvola & Proposed \\
+        \midrule
+        FM\%               &  & 62.62                             & 67.75                            & 73.74                            & 85.74    & 39.25   & 52.31    \\
+        Recall \%          &  & 49.00                             & 58.24                            & 61.26                            & 85.445   & 30.69   & 43.88    \\
+        Prec.\%            &  & 98.00                             & 95.01                            & 98.77                            & 87.44    & 83.63   & 95.21    \\
+        PSNR               &  & 14.70                             & 15.59                            & 16.33                            & 17.34    & 12.27   & 12.81    \\
+        NRM                &  & 25.00                             & 21.06                            & 19.41                            & 7.81     & 34.70   & 27.14    \\
+        MPM ($\times1000$) &  & 1.50                              & 1.48                             & 1.26                             & 1.01     & 5.00    & 1.40     \\
+        DRD                &  & 9.14                              & 8.40                             & 8.99                             & 8.28     & 14.13   & 10.44    \\
+        \bottomrule
     \end{tabular}
 \end{table*}
 
-ここで、$n$は参照テキストの文字数、$i$は挿入されている文字数、$s$は置き換えられた文字数、$d$は削除された文字数を表している~\cite{bib19}~\cite{bib20}。
-CERの計算中、キーは無視し、各領域の値のみを計算する。
-表\ref{tb:Table3}に示されるように、1つの画像でCERを計算する例を提供している。
-全ての画像のCERを加えた後、その数をデータセット内の画像数で割ることで、平均CERを計算する。
-
-
-\subsection{実験結果}
-
-\begin{table*}[hbtp]
-    \centering
-    \caption{Tesseract-OCRの平均CER}
-    \label{tb:Table4}
-    \begin{tabular}{|l|c|c|c|c|}
-        \cline{2-5}
-        \multicolumn{1}{l|}{}          & \multicolumn{4}{c|}{\textbf{Average CER (\%)}}                                                                                               \\ 
-        \cline{2-5}
-        \multicolumn{1}{l|}{}          & \begin{tabular}[c]{@{}c@{}}\textbf{TRUNC}\\\textbf{Thresholding}\end{tabular}                 & \begin{tabular}[c]{@{}c@{}}\textbf{TOZERO}\\\textbf{Thresholding}\end{tabular} & \begin{tabular}[c]{@{}c@{}}\textbf{OTSU}\\\textbf{Thresholding}\end{tabular} & \textbf{Non-Thresholding} \\ 
-        \hline
-        Original                       & -                                              & -                              & -                              & \textbf{38.13}            \\ 
-        \hline
-        Binarization                   & \textbf{30.56}                                 & 51.64                          & 41.27                          & -                         \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}Shadow\\Removal\end{tabular} & 48.95                                          & 48.95                          & 48.95                          & -                         \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}Shadow\\removal +\\Binarization\end{tabular} & \textbf{19.20}                                 & 20.81                          & 33.43                          & -                         \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}Deblurring +\\Binarization\end{tabular} & \textbf{29.16}                                 & 52.88                          & 40.92                          & -                         \\ 
-        \hline
-        \begin{tabular}[c]{@{}l@{}}Deblurring +\\Shadow\\removal +\\Binarization\\\textbf{(Proposed}\\\textbf{method)}\end{tabular} & \textbf{18.82}                                 & 19.65                          & 33.06                          & -                         \\
-        \hline
-    \end{tabular}
-\end{table*}
-
-陰影除去と二値化を組み合わせて使うことによって、私達は効率的に背景画像を除去することができ、e-KTP の可読性が向上した。
-図\ref{fig:Figure5}は元の画像と処理済みの画像の例を示している。
-図\ref{fig:Figure5}(a)の背景は、私達の方法で効果的に除去されていることが図\ref{fig:Figure5}(d)で確認できる。
-表\ref{tb:Table4}で、Tesseract-OCR の精度を向上させるために使用した技術の組み合わせた結果を示している。
-結果は異なる閾値処理の方法に基づき、4つの列に分けられている。
-
-一見すると、図\ref{fig:Figure5}(c)の元画像と、図\ref{fig:Figure5}(e)のぼかし除去された画像には違いがないように見えるが、表\ref{tb:Table4}では、DeblurGAN によって Tesseract-OCR の精度が向上していることが示されている。
-二値化、ぼかし除去と二値化、または陰影除去と二値化、ぼかし除去と陰影除去と二値化を比較することで、改善を確認できる。
-
-また、私達の研究では、二値画像を陰影除去した結果が、陰影除去もしくは二値化を単独で行うよりも優れた精度を示すことがわかった。
-そのため、私達はまず陰影除去を施し、その後に二値化することを選択した。
-陰影除去と二値化の組み合わせを使用することで、平均CERを18.93\%まで削減した。
-この結果より、陰影除去と二値化の組み合わせは、OCR精度の向上に非常に有効であることが示されている。
-
-\begin{figure}[t]
+\begin{figure}[tp]
     \begin{center}
-        \includegraphics*[width=7cm]{image/Figure6.png}
-        \caption{反射を含む画像データセットに対する大津の二値化の結果: (a)大津の二値化前 (b)大津の二値化後}
-        \label{fig:Figure6}
+        \includegraphics*[width=7cm]{image/master/Fig3.png}
+        \caption{(a) 入力画像 (DIBCO-2009のP02.bmp)、(b) Sauvola法の出力(F値 = 77.14)、(c) 提案手法 (F値 = 91.72)}
+        \label{fig3}
     \end{center}
 \end{figure}
 
-A\&N~\cite{bib12}氏, Akhter~\cite{bib12}氏ら、Satyawan~\cite{bib4}氏らの比較から、表\ref{tb:Table4}によると、大津の二値化は私達のデータセットではうまく機能していないことがわかる。
-これは、いくつかのデータセットに反射が含まれているためであると考えられる。
-反射が多い場合、画像にノイズが多く含まれ、反射がテキスト領域と重なってしまい、テキスト領域を検出できないことがある(図\ref{fig:Figure6}を参照)。
-私達の研究では、TRUNC閾値処理が Tesseract-OCR でうまく機能していることが示されている。
-TRUNC閾値処理を利用し、ぼかし除去、陰影除去、および二値化を組み合わせることで、最も低いCER値である18.82\%を達成した。
-これはインドネシアのIDカードの解析において、Tesseract-OCR 精度を向上させるため、正規表現を用いた技術である。
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig4.png}
+        \caption{(a) 入力画像 (DIBCO-2009のH04.bmp)、(b) Sauvola法の出力 (F値 = 73.15)、(c) 提案手法 (F値 = 85.79)}
+        \label{fig4}
+    \end{center}
+\end{figure}
 
-これらの結果に基づき、GANは Tesseract-OCR のOCR精度を向上させることができるとわかる。
-前処理の段階でGANを利用することは、TRUNC閾値処理による陰影除去と二値化を組み合わせると、最良の結果が得られることがわかる。
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig5.png}
+        \caption{(a) DIBCO-2011データセットの画像PR4.pngの一部(テキストが密集し、ストロークが変化)、(b)グラウンド・トゥルース、(c)Otsu法、(d)Niblack法、(e)Bernsen法、(f)Wellner法、(g)Sauvola法、(h)Wolf法、(i)Bradley と Rothの方法、(j)NICK法、(k)Singhら(2012)の方法、(l)提案手法}
+        \label{fig5}
+    \end{center}
+\end{figure}
 
+また、ストロークの幅と文字サイズが変化する印刷文書画像に対しても実験を行った。
+DIBCO-2011の劣化文書画像PR1.png、PR3.png、PR4、PR6、DIBCO-2009のP02.bmp、P03.bmp、
+DIBCO-2017データセットの13.bmp、14.bmp、15.bmp、20.bmpの10枚を選択し、
+選択した既存技術と提案手法の平均統計指標を、表\ref{table4}に示す。
+結果、提案手法はこのような種類の画像に対して、他の手法よりも優れていることがわかった。
+
+
+\begin{table*}[tp]
+    \centering
+    \caption{ストローク幅が異なり密集したテキストがある画像に対する様々な手法の定量的比較}
+    \label{table4}
+    \begin{tabular}{lllllll}
+        \hline
+                                       & 再現率(\%) & 適合率(\%) & FM(\%)         & PSNR           & NRM            & MPM($\times$1000) \\
+        \hline
+        Otsu (1979)                    & 95.23      & 68.54      & 74.14          & 12.79          & 13.41          & 104.55            \\
+        Bernsen (1986)                 & 89.99      & 28.69      & 41.99          & 5.14           & 22.10          & 213.38            \\ 
+        Niblack (1986)                 & 85.35      & 30.75      & 43.53          & 5.69           & 21.82          & 185.99            \\
+        Wellner (1993)                 & 45.52      & 91.83      & 59.04          & 11.52          & 27.49          & 4.91              \\
+        Sauvola and Pietaksinen (2000) & 59.27      & 98.41      & 73.11          & 13.17          & 20.43          & 2.24              \\
+        Wolf and Jolion (2003)         & 70.01      & 95.21      & 79.56          & 14.79          & 15.22          & 2.45              \\
+        Bardley and Roth (2007)        & 79.68      & 80.17      & 78.50          & 13.32          & 12.36          & 12.47             \\
+        Khurshidら (2009)              & 70.57      & 87.86      & 76.51          & 13.21          & 15.28          & 6.65              \\
+        Singhら (2012)                 & 58.78      & 81.68      & 65.12          & 11.57          & 21.59          & 11.42             \\
+        提案手法                       & 75.51      & 96.68      & \textbf{84.81} & \textbf{15.01} & \textbf{12.30} & \textbf{1.63}     \\
+        \hline
+    \end{tabular}
+\end{table*}
+
+
+ストローク幅とテキストサイズが変化する劣化文書画像について、異なる手法の視覚的結果(図\ref{fig5})でも、同様であるとわかる。
+図\ref{fig5}の結果は、Niblack (1986)とBernsen (1986)の二値化手法では、非テキスト領域に黒いノイズが発生することを示している。
+Wellner (1993)、 Sauvola と Pietaksinen (2000), Wolf と Jolion (2003), Bardley と Roth (2007), 
+Khurshidら (2009)、Singhら (2012) の各二値化手法は、文字が密集した画像や文字のサイズが変わる画像からテキストピクセルを完全に取り出すことができない。
+提案手法は、このような画像に対して最良の結果となる。
+低コントラスト画像に対する実験では、Sauvola法と同様に、提案手法はそのような画像に対して良好な二値化結果が得られない。
+図\ref{fig6}のF値は、Sauvola法と比較して、提案手法がこのような種類の画像に対してもより多くの真の画素を取得することを示している。
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig6.png}
+        \caption{(a) 入力画像(HDIBCO-2010の低コントラスト画像H06.tif)、(b) Sauvola法(F値 = 31.13)、(c) 提案手法(F値 = 39.68)}
+        \label{fig6}
+    \end{center}
+\end{figure}
+
+
+\subsection{OCR基準の評価}
+
+二値化の性能は、光学式文字認識(OCR)システムの認識過程に直接影響する。
+「レーベンシュタイン距離とは、2つの文字列の類似度を表す指標である。
+その距離は、ある文字列を別の文字列に変換するのに必要な削除、挿入、置換の数である」と、Levenshteinは定義した。
+手書きOCRでは満足な結果が得られないため、この方法は機械印刷文書の評価にのみ使用できる。
+提案手法と既存手法の二値化結果を、無料のオンラインOCR (Anon, 0000g)\cite{bib32}を使って分析する。
+より高品質な二値化を行うためには、グラウンド・トゥルースのOCR結果と、二値画像のOCR結果とのレーベンシュタイン距離を、より小さくする必要がある。
+データセットから選択した画像の一部について、提案手法および他の手法でのOCR結果によるレーベンシュタイン距離を、図\ref{fig7}に示す。
+この結果は、ストロークの幅とテキストのサイズが変化する画像に対して、提案手法が最良の性能であることを示している。
+
+
+\begin{figure*}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig7.png}
+        \caption{DIBCO-2011データセットの画像 PR3.png の一部に対するOCR結果とレーベンシュタイン距離}
+        \label{fig7}
+    \end{center}
+\end{figure*}
 
 
 \section{結論}
 
-ほとんどのIDカードの画像は、常に良質な画像を生成するわけではない携帯電話のカメラで撮影されるため、文字認識の精度に影響を与える。
-この問題を解決するため、私たちは最適な前処理技術を見つけ、画像の品質を向上させようと試みた。
-
-本実験では、DeblurGAN を特に利用した。
-Tesseract-OCR の性能を効果的に向上させるため、前処理の段階において画像の質を向上させるとして、GANを利用した。
-
-OCR結果の改善には、様々な余地がある。
-異なる種類のGANを用いる、複数のGANを組み合わせる、データセットの品質向上のため、画像からノイズやドット、ブロブを除去するということが可能である。
-また、より高いOCR精度を実現するため、異なる後処理方法やOCR手法を試すこともできる。
-
-
+本論文では、最新の二値化手法であるSauvolaを改良した適応的二値化手法を提案した。
+Sauvola法では、ウィンドウサイズのパラメータは手動で設定する必要があり、
+異なる領域におけるテキストの特性の変化にかかわらず、画像全体に対して固定である。
+提案する手法は、ストローク幅変換行列を用いてウィンドウサイズを動的に計算する。
+視覚的および定量的な結果を示し、印刷画像および手書き画像において、
+提案手法の性能がSauvola法と比較して向上していることを示す。
+ストローク幅や文字サイズが変化する画像に対して、提案手法は、Otsu、Niblack、Bernsen、Wellner、Sauvola、Wolf、Bradley と Roth、NICK、Singhの二値化手法の二値化結果を上回る。
 
 
 \section{訳者の感想}
-開発している段階で、最も懸念のある文字抽出に関する論文を選んだ。
-文字抽出の精度が悪い場合、その後のラベル付けにも大きな影響が及ぶことと、入力領域の抽出は比較的うまくいっていること、Tesseract-OCR と大津の二値化による複雑な入力画像に対する文字抽出を行っていることが本論文を選んだ理由である。
-フォームが常に同じではないこと、大津の二値化を使う展望であることはこの研究と異なるが、別のOCR手法や画像処理、モデルの学習と一緒に自分の研究に取り入れたいと考えた。
-
-
+劣化ではないが、撮影環境の影響によって画像品質が悪い帳票に対して、より適切に二値化できる可能性があると考え、この論文を選択した。
+実際にあったのは、両面印刷の紙を撮影したときに、裏に書いている文字が透けてしまい、文字認識がうまくいかなかったことがあった。
+この論文を見る限り、そのような場合にも対応できそうであると考えた。
+また、ウインドウサイズの調節によって、一部に色がついた帳票に対しても適切に二値化できる可能性があると考えた。
 
 \begin{thebibliography}{99}
     \bibitem{bib1}
-    W.~Bieniecki, S.~Grabowski, and W.~Rozenberg,
-    \newblock “Image preprocessing for improving OCR accuracy”,
-    \newblock { {\em Proceeding of the 3rd International Conference of Young Scientists ‘Perspective Technologies and Methods in MEMS Design’, MEMSTECH 2007}, 2007, pp. 75–80. }
+    Otsu, N.,
+    \newblock “A threshold selection method from gray level histograms”,
+    \newblock { {\em IEEE Trans. Syst. Man Cybern}, Vol. 9, Issue 1, 1979, pp. 62–66. }
     
     \bibitem{bib2}
-    R.~Llobet, J.~R.~Navarro-Cerdan, J.~C.~PerezCortes, and J.~Arlandis,
-    \newblock “OCR post-processing using weighted finite-state transducers”,
-    \newblock { {\em Proceedings - International Conference on Pattern Recognition}, 2010, pp. 2021–2024.}
+    Pun, T.,
+    \newblock “A new method for gray-level picture threshold using the entropy of the histogram”,
+    \newblock { {\em Signal Processing 2}, Vol. 2, Issue 3, 1980, pp. 223-237. }
     
     \bibitem{bib3}
-    S.~Bhaskar, N.~Lavassar, and S.~Green,
-    \newblock {“Implementing Optical Character Recognition on the Android Operating System for Business Cards”},
-    \newblock { {\em CogITo Smart Journal}, Vol. 2, No. 2, 2016, pp. 194. }
+    Pun, T.,
+    \newblock {“Entropic thresholding: a new approach”},
+    \newblock { {\em Computer Graphics and Image Processing}, Vol. 16, Issue 3, 1981, pp. 210-239.}
     
     \bibitem{bib4}
-    W.~Satyawan, M.~Octaviano Pratama, R.~Jannati, G.~Muhammad, B.~Fajar , H.~Hamzah, K.~Kristian,
-    \newblock “Citizen Id Card Detection using Image Processing and Optical Character Recognition”,
-    \newblock { {\em Journal of Physics: Conference Series}, 1235(1), 2019. }
+    Johannsen, G. and Bille, J.,
+    \newblock “A threshold selection method using information measures”,
+    \newblock { {\em Proc. International Conference on Pattern Recognition}, 1982, pp. 140-143. }
     
     \bibitem{bib5}
-    M.~R.~Akhter, M.~H.~Bhuiyan, and M.~S.~Uddin,
-    \newblock “Extraction of words from the national ID cards for automated recognition”,
-    \newblock { {\em International Conference on Graphic and Image Processing (ICGIP 2011)}, 8285(October), 828521, October, 2011. }
+    Kapur, J.N., Sahoo, P.K., A.K.C., Wong.,
+    \newblock “A new method for gray-level picture thresholding using the entropy of the histogram”,
+    \newblock { {\em Computer Graphics and Image Processing}, Vol. 29, Issue 3, 1985, pp. 273-285. }
     
     \bibitem{bib6}
-    J.~H.~Soeseno and Liliana,
-    \newblock “Segmentasi Area KTP dari Image untuk Otomatisasi Pembacaan Data”,
-    \newblock { {\em Jurnal Infra Petra}, Vol 5, No. 1, 2017, pp. 1–5. }
+    Kittler, J., Illingworth, J.,
+    \newblock “On Threshold Selection Using Clustering Criteria”,
+    \newblock { {\em IEEE Transactions on Systems, Man and Cybernetics}, Volume SMC-15, Issue 5, 1985, pp. 652-655. }
     
     \bibitem{bib7}
-    T.~N.~T.~Thanh and K.~N.~Trong,
-    \newblock “A method for segmentation of Vietnamese identification card text fields”,
-    \newblock { {\em International Journal of Advanced Computer Science and Applications}, Vol. 10, No. 10, 2019, pp. 415–421. }
+    Abutaleb, A.S.,
+    \newblock “Automatic thresholding of gray-level pictures using two- dimensional entropy”,
+    \newblock { {\em Computer Graphics and Image Processing}, Vol. 47, Issue 1, 1989, pp. 22-32. }
     
     \bibitem{bib8}
-    Ian~J.~Goodfellow, J.~Pouget-Abadie, M.~Mirza, , B.~Xu, D.~Warde-Farley, S.~Ozair, Y.~Bengio,
-    \newblock “Generative Adversarial Nets”,
-    \newblock { {\em Advances in Neural Information Processing Systems, December}, 2017, pp. 4089–4099. }
+    Brink, A.D., Pendock, N.E.,
+    \newblock “Minimum cross entropy threshold selection. Pattern Recognit”,
+    \newblock { {\em Computer Graphics and Image Processing}, Vol. 29, Issue 1, 1996, pp. 179-188. }
     
     \bibitem{bib9}
-    A.~Lat and C.~V.~Jawahar,
-    \newblock “Enhancing OCR Accuracy with Super Resolution”,
-    \newblock { {\em Proceedings - International Conference on Pattern Recognition}, August, 2018, pp. 3162–3167. }
+    Bernsen, J.,
+    \newblock “Dynamic thresholding of gray level images”,
+    \newblock { {\em Proceedings - International Conference on Pattern Recognition}, Vol. 3, No. 1, 1986, pp. 1251–1255. }
     
     \bibitem{bib10}
-    X.~Su, H.~Xu, Y.~Kang, X.~Hao, G.~Gao, and Y.~Zhang,
-    \newblock “Improving text image resolution using a deep generative adversarial network for optical character recognition”,
-    \newblock { {\em Proceedings of the International Conference on Document Analysis and Recognition, ICDAR, 2019}, pp. 1193–1199. }
+    Niblack, W.,
+    \newblock { {\em An Introduction to Image Processing. Prentice-Hall, Englewood Cliffs}, pp. 115-116. }
     
     \bibitem{bib11}
-    J.~Kong and C.~Wang,
-    \newblock “Resolution Enhancement for Low-resolution Text Images Using Generative Adversarial Network”,
-    \newblock { {\em  MATEC Web of Conferences}, 2018, pp. 246. }
+    Wellner, P.,
+    \newblock { {\em Adaptive Thresholding for the Digital Desk. Xerox, EPC1993-110}, 1993. }
     
     \bibitem{bib12}
-    A.~El~Harraj and N.~Raissouni,
-    \newblock “OCR Accuracy Improvement on Document Images Through a Novel Pre-Processing Approach”,
-    \newblock { {\em Signal \& Image Processing : An International Journal}, Vol.6, No.4, 2015, pp. 01–18. }
+    Sauvola, J., Pietaksinen, M.,
+    \newblock “Adaptive document image binarization”,
+    \newblock { {\em Pattern Recognition}, Vol. 33, Issue 2, 2000, pp. 225-236. }
     
     \bibitem{bib13}
-    M.~Shen and H.~Lei,
-    \newblock “Improving OCR performance with background image elimination”,
-    \newblock { {\em 2015 12th International Conference on Fuzzy Systems and Knowledge Discovery}, FSKD 2015, 2015, pp. 1566–1570. }
+    Yang, Y., Yan, H., 
+    \newblock “An adaptive logical method for binarization of degraded document images”,
+    \newblock { {\em Pattern Recognition}, Vol. 33, Issue 5, 2000, pp. 787–807. }
     
     \bibitem{bib14}
-    G.~Vamvakas, B.~Gatos, N.~Stamatopoulos and S.~J.~Perantonis,
-    \newblock “A Complete Optical Character Recognition Methodology for Historical Documents,”
-    \newblock { {\em 2008 The Eighth IAPR International Workshop on Document Analysis Systems}, 2008, pp. 525-532. }
+    Wolf, C., Jolion, J.M.,
+    \newblock “Extraction and recognition of artificial text in multimedia documents”
+    \newblock { {\em Journal of Family Violence}, Vol. 18, Issue 6, 2003, pp. 309–316. }
     
     \bibitem{bib15}
-    S.~Hartanto, A.~Sugiharto, and S.~N.~Endah,
-    \newblock “Optical Character Recognition Menggunakan Algoritma Template Matching Correlation”,
-    \newblock { {\em Jurnal Masyarakat Informatika}, Vol. 5, No. 9, 2015, pp. 1-12. }
+    Do, J., He, Q.D.M., Downton, A.C., Kim, J.H.,
+    \newblock “A comparison of binarization methods for historical archive documents”
+    \newblock { {\em In: Eighth International Conference on Document Analysis and Recognition (ICDAR’05)}, Vol. 1, Seoul, South Korea, 2005, pp. 538–542. }
     
     \bibitem{bib16}
-    O.~Kupyn, V.~Budzan, M.~Mykhailych, D.~Mishkin, and J.~Matas,
-    \newblock “DeblurGAN: Blind Motion Deblurring Using Conditional Adversarial Networks”,
-    \newblock { {\em Proceedings of the IEEE Computer Society Conference on Computer Vision and Pattern Recognition}, 2018, pp. 8183–8192. }
+    Gatos, B., Ntirogiannis, K., Pratikakis, I.,
+    \newblock “ICDAR 2009 document image binarization contest (DIBCO 2009)”,
+    \newblock { {\em In: 10th International Conference on Document Analysis and Recognition}, Barcelona, 2009, pp. 1375–1382 }
     
     \bibitem{bib17}
-    M.~Arjovsky, S.~Chintala, and L.~Bottou,
-    \newblock “Wasserstein GaN”.
-    \newblock { {\em ArXiv}, 2017. }
+    Bardley, D., Roth, G.,
+    \newblock “Adaptive Thresholding using the Integral Image”.
+    \newblock { {\em Journal of Graphics GPU and Game Tools}, Vol. 12, Issue 2, 2007, pp. 13-21. }
     
     \bibitem{bib18}
-    M.~G.~Marne, P.~R.~Futane, S.~B.~Kolekar, A.~D.~Lakhadive, and S.~K.~Marathe,
-    \newblock “Identification of optimal Optical Character Recognition (OCR) engine for proposed system”,
-    \newblock { {\em 2018 Fourth International Conference on Computing Communication Control and Automation (ICCUBEA)}, 2018, pp. 1–4. }
+    Shafait, F., Keysers, D., Bruel, T.M.,
+    \newblock “Efficient implementation of local adaptive thresholding techniques using integral images”,
+    \newblock { {\em In: Proceedings of SPIE 6815 on Document Recognition and Retrieval XV}, 2018}
     
     \bibitem{bib19}
-    I.~S.~MacKenzie amd R.~W.~Soukoreff,
-    \newblock “A character-level error analysis technique for evaluating text entry methods”,
-    \newblock { {\em ACM International Conference Proceeding Series}, Vol. 31, No. 1, 2002, pp. 243–246. }
+    Khurshid, K., Siddiqi, I., Faure, C., Vincent, N.,
+    \newblock “Comparison of Niblack inspired methods for ancient document”,
+    \newblock { {\em In: Proceedings 16th IEEE International Conference on Document Recognition and Retrieval}, Vol. 7247, 2009, pp. 1–10. }
     
     \bibitem{bib20}
-    J.~Read, E.~Mazzone, and M.~Horton,
-    \newblock “Recognition errors and recognizing errors - Children writing on the tablet PC”,
-    \newblock { {\em Lecture Notes in Computer Science (Including Subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)}, 3585 LNCS(I), 2005, pp. 1096–1099. }
+    Zhou, S., Liu, C., Cui, Z., Gong, S., 
+    \newblock “An improved adaptive document image binarization method”,
+    \newblock { {\em In: Proceedings of 2nd IEEE International Conference on Image Signal Processing}, Vol. 7, 2009, pp. 1–5. }
     
+    \bibitem{bib21}
+    Kawano, H., Oohama, H., Maeda, H., Okada, Y., Ikoma, N.,
+    \newblock “Degraded document image binarization combining local statistics”,
+    \newblock { {\em In: IEEE International Joint Conference (ICROS-SICE).}, 2009, pp. 439–443. }
+    
+    \bibitem{bib22}
+    Lu, S., Tan, C.L.
+    \newblock “Document image binarization using background estimation and stroke edges”,
+    \newblock { {\em In: IEEE International Joint Conference (ICROS-SICE).}, Vol. 13, 2010, pp. 303–314. }
+    
+    \bibitem{bib23}
+    Singh, T.R., Roy, S., Singh, O.I., Sinam, T., Singh, K.M.,
+    \newblock “A new local adaptive thresholding technique in binarization”,
+    \newblock { {\em Communications in Computer and Information Science}, Vol. 8, Issue 6, 2011, pp. 271-277. }
+    
+    \bibitem{bib24}
+    Singh, O.I., Sinam, T., James, O., Singh, T.R.,
+    \newblock “Local contrast and mean based thresholding technique in binarization”,
+    \newblock { {\em International Journal of Computer Applications}, Vol. 51, No. 6, 2012, pp. 5-10. }
+    
+    
+    \bibitem{bib25}
+    Natarajan, J., Sreedevi, I.,
+    \newblock “Enhancement of ancient manuscript images by log based binarization technique”,
+    \newblock { {\em AEU - International Journal of Electronics and Communications}, Vol. 75, No. 6, 2017, pp. 15-22. }
+    
+    \bibitem{bib26}
+    \newblock "Anon",
+    \newblock {users.iit.demokritos.gr/~bgat/DIBCO2009/benchmark}
+    
+    \bibitem{bib27}
+    \newblock "Anon",
+    \newblock {https://users.iit.demokritos.gr/~bgat/H-DIBCO2010/benchmark/}
+    
+    \bibitem{bib28}
+    \newblock "Anon",
+    \newblock {utopia.duth.gr/~ipratika/DIBCO2011/resources}
+    
+    \bibitem{bib29}
+    \newblock "Anon",
+    \newblock {utopia.duth.gr/ipratika/HDIBCO2012/benchmark}
+    
+    \bibitem{bib30}
+    \newblock "Anon",
+    \newblock {https://vc.ee.duth.gr/h-dibco2016/benchmark.}
+    
+    \bibitem{bib31}
+    \newblock "Anon",
+    \newblock {https://vc.ee.duth.gr/dibco2017}
+    
+    \bibitem{bib32}
+    \newblock "Anon",
+    \newblock "IMAGE TO TEXT CONVERTER - OCR ONLINE",
+    \newblock {https://www.onlineocr.net/}
 \end{thebibliography}
 
 \end{document}
