@@ -1,0 +1,631 @@
+\documentclass[uplatex, twocolumn,10pt]{jsarticle}
+
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{latexsym}
+\usepackage{bmpsize}
+\usepackage{url}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{ltablex}
+\usepackage{enumitem}
+
+\usepackage{booktabs}
+
+\def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
+\def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
+
+\newcommand{\ttt}[1]{\texttt{#1}}
+
+\begin{document}
+
+\title{\bf{\LARGE{A new Approach for Detection and Extraction Tables in Scanned Document Image using Improved Hough Transform} \\ \Large{改良版ハフ変換を用いたスキャン文書画像からの \\ 表検出と抽出の新たな手法の提案}}}
+\author{ {Hasanen Samir Abdullah \and Ammar Hussein Jassim} , \\
+    Engineering Applications of Artificial Intelligence, \\
+    Vol. 34, 2016-05-31, pp.738-753 \\ }
+\date{訳: 木村 優哉 \\ 2025年5月23日(金)}
+
+\maketitle
+
+
+\begin{abstract}
+    本露文では、文書認識における主要段階の1つとして、スキャンされた文書画像からの表の検出と抽出のためのハフ変換の改良手法を提案する。
+    これは、原本文書と偽造文書を識別するための手法である。
+    この改良は、基本的に標準ハフ変換 (SHT) のパラメータ選択、ピーク閾値、および投票方式の調整に由来する。
+    これにより、ノイズエッジによって形成されるピーク値は、明瞭なエッジによって形成されるピーク値と比較して低下する。
+    実験結果は、提案手法がハフ空間における偽ピークを大幅に抑制し、効果的であることを示す。
+    パラメータは事前​​に経験的に決定できるため、提案手法を完全自動の線検出アプリケーションに使用できるという利点がある。\\
+    \textbf{キーワード}: ハフ変換、文書画像解析 (DIA)、表検出、表抽出
+\end{abstract}
+
+
+
+\section{はじめに}
+
+文書には表を含めることができ、表は文書ページ内のどこにでも配置でき、規則的な構造を持っている [1]。
+表の検出と分析は、現在の文書画像解析（DIA）システムの一部である。
+文書画像内の表は、関係情報や統計情報を示す構造化オブジェクトとして扱われる。
+スキャンされた文書画像からの表の検出と抽出は、スキャン画像処理、光学式文字認識（OCR）システム、デジタルライブラリシステムにおいて最も重要な研究開発トピックの1つである。
+表には通常、特定のデータが含まれているため、表の検出は重要である。
+高速コンピュータ、大容量コンピュータメモリ、低価格スキャナの登場により、DIAへの関心が高まっている [2]。
+DIAは、オフィス文書作成業務の自動化において徐々に重要なツールになってきています。図（1）はDIAのカテゴリーを示す。
+テキストリーダーや OCR システムなどの文書スキャナーは、これらのタスクを実行できるシステムの主要コンポーネントである。
+今日では、文書はますますコンピュータ上で作成されている。
+そのため、文書分析や OCR に関する研究成果を日々目にすることができる。
+
+今日では表は一般的であり、書籍、新聞など、ほとんどの種類の文書に存在する。
+表は通常のテキストブロックよりも情報を理解しやすくし、統計情報や関係情報を記述する能力があり、DIA [3]で重要な役割を果たす。
+情報を表現する必要がある場合、表は情報を効率的に表現するために使用されます。表現する必要がある情報の種類に応じて、表のレイアウトは異なる。
+表の形式が多様であるため、OCR エンジンが画像ブロックとして検出して抽出することは困難である。
+本稿では、手書きの表ではなく印刷された表を扱い、文書画像から表を検出して抽出するために、この目的で提案されている多くの手法を紹介する。
+提案されている手法の多くは、ハフ変換、フーリエ変換、最近傍法、数学的モルフォロジー、投影プロファイルに基づく。
+本研究で提案されたアプローチは、スキャンされた文書から表を検出および抽出するためのシンプルですが強力なアプローチである。
+表に見られる表記法によっては、表に交線があり、異なる列間の距離が単語間の距離よりもかなり大きく、表の線が目立って見えることがある。
+この欺瞞的な観察により、オーバーヘッド計算とメモリコストが低い、シンプルで強力な表検出および抽出システムを設計できる。
+N x N のデジタル画像内の目立つエッジポイントの小さなサブセットをしきい値手法を使用して調べ、より顕著なエッジ特徴を分離する。
+文書画像の各ピクセルがスキャンされ、エッジ情報を使用して画像のハフ変換が計算され、変換 (ハフ) 画像で多くのピークを見つけるのではなく、複数の変換ピークから1つの最良の最大値ピークが選択される。
+変換空間内の線に属する多くのピークから1つのピークのみを選択する必要がある。
+アルゴリズムは非常に高いピークから開始し、それを指定して、それに参加するピクセルを選択する。
+提案されたアプローチにより、ハフ変換空間全体を再計算することなく、新しい変換スキャン文書を見つけることができる。
+このフェーズは順番に実行され、大きなピークが検出された場合は小さなピークを省略する。
+これにより、ハフ変換の探索空間が縮小され、計算時間が短縮されますが、検出性能は完全なハフ変換と同等のレベルに維持される。
+
+
+\subsection{ほとんどの適応的二値化手法の問題点}
+
+\begin{enumerate}[label=(\arabic*)]
+    \item ほとんどの適応的二値化手法において、最適な二値画像を生成するにあたり、手動で設定するパラメータに依存する。
+          適応的二値化手法で最も重要なパラメータの1つは、閾値を得るために必要な特徴を抽出する近傍領域のサイズ（ウインドウサイズ）である。
+          これらの手法では、ウィンドウサイズは画像全体に対して固定である。
+    \item 異なる画像間で、ウィンドウサイズを同じ値にした際に、画像は異なる領域で情報の密度がバラバラであるため、うまく機能しない。
+\end{enumerate}
+
+本論文では、Sauvola と Pietaksinen(2000)の二値化技術を改良した適応的二値化手法を示す。
+% ストローク幅 = 文字の幅のこと？
+本手法では、ストローク幅変換を用いて、画像ピクセル間で自動的かつ動的にウィンドウサイズを計算する。
+閾値を計算するためにピクセルの強度値を用いて特徴を抽出するウィンドウサイズは、ストローク幅変換行列に応じてピクセルごとに変化する。
+これにより、手動で調整するパラメータの数を減らすことができた。
+本論文では、第2節で提案手法、第3節で実験方法、第4節で結論についてそれぞれ述べる。
+
+
+
+\section{提案手法}
+
+本節では、劣化した文書画像に対する二値化手法（Modified Sauvola）の提案手法について述べる。
+本手法は、ストローク幅変換(SWT)を用いて、入力画像全体の近傍サイズを自動的かつ動的に計算する。
+提案手法は、あらゆる種類の劣化画像に対して、Sauvolaの手法よりも優れた結果を示す。
+ストローク幅やテキストサイズが変化する劣化文書画像の場合、他の多くの既存二値化手法よりも優れた結果を得られる。
+
+
+
+\subsection{Sauvola and Pietaksinen (Sauvola)の二値化法 (Sauvola と Pietaksinen, 2000)}
+
+この手法では、一定サイズの近傍ウィンドウ内の画素値の平均と標準偏差を用いて、局所閾値$Th(i, j)$を以下のように計算する。
+
+\begin{equation}\label{eq1}
+    Th(i, j) = \mu_{ij}[1+k\times(1-\frac{\sigma_{ij}}{R}-1)]
+\end{equation}
+
+ここで、$R$ はグレースケール画像では128である。
+$\mu_{ij}$は局所平均、$j$は局所標準偏差である。
+ウインドウサイズ(w)と$k$の2つは手動で調整するパラメータであり、二値化の結果はこれらのパラメータに大きく依存する。
+この手法の主な問題は、パラメータの値を適切に設定する必要があることである。
+$k$の値は0.5、ウインドウサイズは15を推奨する。
+この手法では、ウィンドウサイズと$k$の値は画像全体に対して固定する。
+述べたように、画像内の異なる領域で異なる特性を持つ文書画像や、テキストサイズが異なる文書画像の場合、ウィンドウサイズを固定した場合は良い結果が得られない。
+
+
+\subsection{ストローク幅変換行列}\label{sec2.2}
+
+% 演算子、オペレータ、フィルタ、マスクなど
+ストローク幅変換(SWT)は、各ピクセルに対して、そのピクセルを含む最も広いストロークの幅を計算する局所的なフィルタである。
+% 自然の背景に、誰かの像があって、その下に文字があった
+Epshteinら (2010)は、ストローク幅変換(SWT)を自然風景の画像内にある文字を検出するために導入した。
+ストローク幅変換行列を求めるには、まず入力画像と同じサイズの行列で、すべての要素を$\infty$で初期化する。
+次に、Canny法によるエッジ検出によって、入力画像のエッジマップを生成する。
+エッジはストロークの境界であり、これらのストロークの幅を求める必要がある。
+そして、各エッジのピクセル$u$における勾配方向$g_u$を計算する。
+任意のエッジのピクセル$u$における勾配方向$g_u$はストロークの境界の方向に対して垂直である。
+各エッジのピクセル$u$に対して、別のエッジのピクセル$v$が見つかるまで、$r = u + n \times g_u(n > 0)$の経路に沿って勾配方向へたどる。
+ピクセル$v$での勾配方向$g_v$が、$u$での勾配方向$g_u$のおおよそ反対である場合、
+それぞれの経路内のピクセルについて、その経路の中でのピクセル$u$、$v$間の距離を、そのピクセルのストローク幅として割り当てる。
+ただし、そのピクセルの現在の値が、計算した値よりも小さい場合は、計算した値は無視する。
+また、エッジのピクセル$v$が見つからない場合、または$g_v$が$g_u$の反対ではない場合、その経路は破棄する。
+アルゴリズムは2回適用する。
+1回目は勾配方向$g_u$を使用し、2回目は$−g_u$を使用し、明るい背景に暗いテキスト、暗い背景に明るいテキストの両方の場合を考慮に入れる。
+
+典型的なストロークとストローク幅を見つける手順を、図\ref{fig1}に示す。
+図\ref{fig2}の$a$と$b$に対するストローク幅変換行列の値を、それぞれ表\ref{table1}と表\ref{table2}に示す。
+
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig1.png}
+        \caption{SWTの実装 (a)典型的ストローク (b)$u$はストロークの境界線上のピクセル。$v$は$u$における勾配方向のストローク境界の反対側のピクセル。
+            (c)パスに沿った各ピクセルには、その現在値と求めたストローク幅の最小値を割り当てる(Epshteinら, 2010)。}
+        \label{fig1}
+    \end{center}
+\end{figure}
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig2.png}
+        \caption{異なるストローク幅の文字がある文書画像}
+        \label{fig2}
+    \end{center}
+\end{figure}
+
+
+
+\begin{table*}[tp]
+    \centering
+    \caption{図\ref{fig2}のaにおけるストローク幅変換行列の値}
+    \label{table1}
+    \begin{tabular}{cccccccccccc}
+        \hline
+        15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.46 & 15.46 & 15.46 & 15.46 & 15.46 & 15.46 & 15.46 \\
+        15.07 & 15.07 & 15.07 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 & 15.43 \\
+        12.81 & 14.87 & 14.87 & 14.87 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 \\
+        13.75 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 \\
+        13.75 & 14.42 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 15.36 & 15.36 \\
+        13.75 & 14.42 & 14.42 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 \\
+        13.75 & 14.42 & 14.42 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 \\
+        14.39 & 14.39 & 14.39 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 \\
+        14.39 & 14.39 & 14.39 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 & 14.87 \\
+        14.28 & 14.28 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 & 14.97 \\
+        15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 \\
+        15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 \\
+        15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.07 & 15.33 & 15.33 \\
+        15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 \\
+        15.00 & 15.00 & 15.00 & 15.00 & 15.00 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 \\
+        14.14 & 14.87 & 14.87 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 \\
+        14.14 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 \\
+        10.00 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.36 & 15.46 \\
+        9.75  & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.33 & 15.49 \\
+        \hline
+    \end{tabular}
+\end{table*}
+
+
+\begin{table*}[tp]
+    \centering
+    \caption{図\ref{fig2}のbにおけるストローク幅変換行列の値}
+    \label{table2}
+    \begin{tabular}{cccccccccc}
+        \hline
+        10.77 & 9.75  & 9.75  & 9.75  & 10.00 & 10.00 & 10.82 & 10.15 & 10.15 & 10.15 \\
+        10.77 & 9.75  & 9.75  & 9.75  & 9.75  & 9.75  & 9.59  & 9.75  & 9.75  & 9.95  \\
+        10.77 & 9.75  & 9.90  & 9.90  & 9.90  & 9.75  & 9.75  & 9.75  & 9.75  & 9.75  \\ 
+        10.77 & 9.75  & 9.90  & 9.90  & 9.90  & 9.90  & 9.75  & 9.75  & 9.75  & 9.75  \\
+        10.77 & 9.75  & 9.90  & 9.90  & 9.90  & 9.75  & 9.75  & 9.75  & 9.75  & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 9.75  & 10.00 & 10.00 & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.77 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.34 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 & 10.00 \\
+        10.34 & 9.75  & 10.00 & 10.00 & 10.00 & 9.75  & 9.59  & 10.34 & 10.82 & 10.82 \\
+        10.34 & 9.59  & 9.75  & 10.00 & 9.75  & 9.59  & 9.54  & 14.87 & 14.87 & 14.87 \\
+        \hline
+    \end{tabular}
+\end{table*}
+
+
+\subsection{Sauvola法の改良}
+
+Sauvola法(Sauvola and Pietaksinen, 2000)では、パラメータであるウィンドウサイズ(W)と$k$は固定であり、特定の文書画像に対してこれら2つの変数の値を正しく設定することが不可欠である。
+しかし、それぞれの文書画像に対して、手作業でこれらのパラメータの正確な値を計算し、設定することは困難である。
+また、文書画像には、様々なサイズやストローク幅のテキストが含まれている可能性がある。
+単一のウィンドウサイズは、あるサイズのテキストに対してはうまく機能するが、他のサイズに対してはうまく機能しない。
+Modified Sauvola'sと名付けた提案手法は、ストローク幅変換を用いて計算されたストローク幅に基づいて、各ピクセルの近傍サイズを自動的に計算する。
+アルゴリズムは以下の通りである:
+
+\textbf{ステップ1:} \par
+\noindent 入力画像がカラー画像であれば、グレースケール画像に変換する。
+
+\textbf{ステップ2:} \par
+\noindent (\ref{sec2.2}節で説明したように)入力画像のストローク幅変換(SWT)を計算し、SWT行列を生成する。
+
+\textbf{ステップ3:} \par
+\noindent SWT行列を使用して、各画素のウィンドウサイズを以下のように自動的に計算する：
+
+\begin{equation}\label{eq2}
+    W(i, j) = 4 \times SW(i, j) + 1
+\end{equation}
+
+実験的には、式\ref{eq1}で与えられるウィンドウサイズが最良の結果となる。
+位置$(i, j)$の画素のウインドウサイズ$W(i, j) \times W(i, j)$を閾値の計算に用い、同画像内の各ピクセルで異なる。
+
+\textbf{ステップ4:} \par
+\noindent 位置$(i, j)$の画素の閾値を、ステップ3と式\ref{eq2}からそのピクセルのウィンドウサイズを用いて推定する（Sauvola法と同じ）。
+
+
+
+\section{実験結果}
+
+実験は、DIBCOベンチマークデータセットDIBCO-2009(Anon, 0000a)\cite{bib26}、HDIBCO-2010(Anon, 0000b)\cite{bib27}、
+DIBCO-2011(Anon, 0000c)\cite{bib28}、HDIBCO-2012(Anon, 0000d)\cite{bib29}、HDIBCO-2016(Anon, 0000e)\cite{bib30}、
+およびDIBCO-2017(Anon, 0000f)\cite{bib31}から選択した劣化文書画像に対して行う。
+これらのデータセットには、様々な実際の劣化文書画像と、それに対応する半自動生成したグラウンド・トゥルースを含む。
+本節では、定量的な実験結果とOCRに基づく実験結果について述べる。
+提案手法を既存の9つの適応的二値化手法と比較する:
+Otsu (1979)、Bernsen (1986)、Niblack (1986)、Wellner (1993)、
+Sauvola と Pietaksinen (2000)、Wolf と Jolion (2003)、Singhら (2012)。
+Otsu法は大域的二値化手法であり、他の手法は適応的二値化手法である。
+これらの適応的二値化手法はすべて、Sauvola法と同様に2つのパラメータを手動で調整するものであり、いずれの二値化結果もこれらのパラメータの値に大きく影響を受ける。
+
+\subsection{統計的結果}
+
+統計的結果は、定量的尺度を用いて評価する：
+% ピーク信号対雑音比: 画質の再現性に影響を与える、信号が取りうる最大のパワーと劣化をもたらすノイズの比率を表す工学用語
+% 画像がどれだけ劣化をしたかを示す値。値が小さいほど劣化していて、大きいほど元の画像に近い。
+F値(FM)、ピーク信号対雑音比(PSNR)、
+% 画像処理タスクにおける背景の誤検出率を評価する指標。通常は、背景と誤って認識された前景領域の割合を示す。
+負率メトリック(Negative Rate Metric, NRM)、
+誤分類ペナルティメトリック(Misclassification penalty metric, MPM)、
+距離相互歪みメトリック(Distance Reciprocal Distortion Metric, DRD)。
+% 文書解析と認識に関する国際会議 ICDAR
+% ICDAR2015は、風景写真中のテキスト領域にアノテーションされた1000枚のトレーニング画像と500枚のテスト画像
+これらの評価指標は、国際的文書画像の二値化結果の比較(Gatosら, 2009; Pratikakisら, 2016, 2017)
+で提案されたICDARベンチマーク評価指標から採用した。
+これらの評価指標は、取得した二値画像とグラウンド・トゥルースの画像との類似度を定義する。
+
+\textbf{FM}は適合率(PR)と再現率(RC)を組み合わせ、総合的に二値化精度を決定する。
+適合率(PR)は二値画像でのノイズを、再現率(RC)はテキスト本文の精度をそれぞれ示す。
+これら3つの値が高いほど、出力する二値画像($I_B$)が理想的な二値画像($I_{GT}$)に近いことを示す。
+
+\begin{equation}\label{eq3}
+    FM = \frac{2 \times RC \times PR}{RC + PR}
+\end{equation}
+
+$PR = \frac{N_{TT}}{N_{FT} + N_{TT}}$、$RC = \frac{N_{TT}}{N_{FNT} + N_{TT}}$とする。
+
+ここで、$N_{TT}$は真のテキストピクセルの数、$N_{FT}$は偽のテキストピクセルの数、$N_{FNT}$は偽の非テキストピクセルの数である。
+
+\textbf{PSNR}は出力結果が理想的な二値画像に近いかどうかを測定する指標である。
+PSNRの値が高いほど、二値化の品質が良いことを示す。
+
+\begin{equation}\label{eq4}
+    PSNR = 10 \times \log (\frac{D^2}{MSE}),
+\end{equation}
+
+$D$は画像のコントラストである。二値画像の場合、$D$の値は1とする。$MSE$は、平均二乗誤差である。
+
+\begin{equation}\label{eq5}
+    MSE = \sum_{i=1}^M \sum_{j=1}^N \frac{ (I_B(i, j) - I_{GT}(i, j))^2 }{MN}
+\end{equation}
+
+$I_B(i, j)$は理想的な二値画像の画素値、$I_{GT}(i, j)$は同ピクセルにおける理想的な画素値をそれぞれ示す。
+
+\textbf{NRM}は、$I_{GT}$と$I_B$の間のピクセル非類似率を測定する。
+$NRM$の値が低いほど、二値化が適切であることを示す。
+
+\begin{equation}\label{eq6}
+    NRM = \frac{P + Q}{2}
+\end{equation}
+
+ここで、
+\begin{equation}\label{eq7}
+    P = \frac{N_{FNT}}{N_{FNT} + N_{TT}},
+\end{equation}
+
+\begin{equation}\label{eq8}
+    Q = \frac{N_{FT}}{N_{FT} + N_{TNT}}
+\end{equation}
+である。
+
+\textbf{MPM}は、以下のように定義されている。
+
+\begin{equation}\label{eq9}
+    MPM = \frac{ \sum_{i=1}^{C_{FNT}} d_{FNT}^i + \sum_{j=1}^{C_{FT}} d_{FT}^j }{2D}
+\end{equation}
+
+ここで、$d_{FNT}^i$は偽の非テキストの距離を表し、
+$d_{FT}^j$は$j$番目の偽のテキストピクセルについて、グラウンド・トゥルースにおけるテキスト輪郭からの距離を表す。
+正規化係数$D$は、グラウンド・トゥルースのすべてのピクセルからテキスト輪郭までの距離の総和である。
+この指標は、出力した二値画像がどれだけのグラウンド・トゥルースの輪郭を表現しているかを表す。
+$MPM$の値が小さいほど、二値化アルゴリズムの質が高いことを示す。
+
+\textbf{DRD}は二値化した文書画像の視覚的な歪みを測定する指標であり、Luら(2004)によって導入された。
+この指標は、画像に対する人間の視覚的知覚と手法の性能の間に相関があることを示す。
+
+上記のすべてのデータセットを用いた提案手法と、Sauvola法の平均定量結果を、表\ref{table3}に示す。
+表\ref{table3}の定量的結果と図\ref{fig3}、図\ref{fig4}、図\ref{fig5}の視覚的結果から、すべての種類の劣化画像(機械印刷と手書き)に対して、
+提案手法がSauvola法よりも良い結果を示すことがわかる。
+
+
+\begin{table*}[tp]
+    \centering
+    \caption{異なるデータセットを用いたSauvolaと提案手法の定量的比較}
+    \label{table3}
+    \begin{tabular}{cccccccccc}
+        \toprule
+                           &  & \multicolumn{2}{c}{DIBCO-2009 PR} & \multicolumn{2}{c}{DIBCO-2009HW} & \multicolumn{2}{c}{DIBCO-2011PR}                                 \\
+                           &  & Sauvola                           & Proposed                         & Sauvola                          & Proposed & Sauvola & Proposed \\
+        \midrule
+        FM\%               &  & 68.69                             & 85.39                            & 51.13                            & 64.68    & 67.76   & 77.39    \\
+        Recall \%          &  & 53.77                             & 75.47                            & 40.84                            & 54.94    & 52.19   & 64.74    \\
+        Prec.\%            &  & 99.32                             & 98.84                            & 97.41                            & 95.21    & 99.70   & 98.96    \\
+        PSNR               &  & 11.89                             & 14.51                            & 15.48                            & 16.34    & 12.48   & 13.85    \\
+        NRM                &  & 23.15                             & 12.34                            & 29.60                            & 22.60    & 23.91   & 17.66    \\
+        MPM ($\times1000$) &  & 2.57                              & 1.05                             & 0.45                             & 0.38     & 0.88    & 0.63     \\
+        DRD                &  & 12.06                             & 7.18                             & 10.95                            & 8.63     & 9.82    & 6.57     \\
+        \midrule
+                           &  & \multicolumn{2}{c}{DIBCO-2011 HW} & \multicolumn{2}{c}{HDIBCO-2016}  & \multicolumn{2}{c}{DIBCO-2017}                                   \\
+                           &  & Sauvola                           & Proposed                         & Sauvola                          & Proposed & Sauvola & Proposed \\
+        \midrule
+        FM\%               &  & 62.62                             & 67.75                            & 73.74                            & 85.74    & 39.25   & 52.31    \\
+        Recall \%          &  & 49.00                             & 58.24                            & 61.26                            & 85.445   & 30.69   & 43.88    \\
+        Prec.\%            &  & 98.00                             & 95.01                            & 98.77                            & 87.44    & 83.63   & 95.21    \\
+        PSNR               &  & 14.70                             & 15.59                            & 16.33                            & 17.34    & 12.27   & 12.81    \\
+        NRM                &  & 25.00                             & 21.06                            & 19.41                            & 7.81     & 34.70   & 27.14    \\
+        MPM ($\times1000$) &  & 1.50                              & 1.48                             & 1.26                             & 1.01     & 5.00    & 1.40     \\
+        DRD                &  & 9.14                              & 8.40                             & 8.99                             & 8.28     & 14.13   & 10.44    \\
+        \bottomrule
+    \end{tabular}
+\end{table*}
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig3.png}
+        \caption{(a) 入力画像 (DIBCO-2009のP02.bmp)、(b) Sauvola法の出力(F値 = 77.14)、(c) 提案手法 (F値 = 91.72)}
+        \label{fig3}
+    \end{center}
+\end{figure}
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig4.png}
+        \caption{(a) 入力画像 (DIBCO-2009のH04.bmp)、(b) Sauvola法の出力 (F値 = 73.15)、(c) 提案手法 (F値 = 85.79)}
+        \label{fig4}
+    \end{center}
+\end{figure}
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig5.png}
+        \caption{(a) DIBCO-2011データセットの画像PR4.pngの一部(テキストが密集し、ストロークが変化)、(b)グラウンド・トゥルース、(c)Otsu法、(d)Niblack法、(e)Bernsen法、(f)Wellner法、(g)Sauvola法、(h)Wolf法、(i)Bradley と Rothの方法、(j)NICK法、(k)Singhら(2012)の方法、(l)提案手法}
+        \label{fig5}
+    \end{center}
+\end{figure}
+
+また、ストロークの幅と文字サイズが変化する印刷文書画像に対しても実験を行った。
+DIBCO-2011の劣化文書画像PR1.png、PR3.png、PR4、PR6、DIBCO-2009のP02.bmp、P03.bmp、
+DIBCO-2017データセットの13.bmp、14.bmp、15.bmp、20.bmpの10枚を選択し、
+選択した既存技術と提案手法の平均統計指標を、表\ref{table4}に示す。
+結果、提案手法はこのような種類の画像に対して、他の手法よりも優れていることがわかった。
+
+
+\begin{table*}[tp]
+    \centering
+    \caption{ストローク幅が異なり密集したテキストがある画像に対する様々な手法の定量的比較}
+    \label{table4}
+    \begin{tabular}{lllllll}
+        \hline
+                                       & 再現率(\%) & 適合率(\%) & FM(\%)         & PSNR           & NRM            & MPM($\times$1000) \\
+        \hline
+        Otsu (1979)                    & 95.23      & 68.54      & 74.14          & 12.79          & 13.41          & 104.55            \\
+        Bernsen (1986)                 & 89.99      & 28.69      & 41.99          & 5.14           & 22.10          & 213.38            \\ 
+        Niblack (1986)                 & 85.35      & 30.75      & 43.53          & 5.69           & 21.82          & 185.99            \\
+        Wellner (1993)                 & 45.52      & 91.83      & 59.04          & 11.52          & 27.49          & 4.91              \\
+        Sauvola and Pietaksinen (2000) & 59.27      & 98.41      & 73.11          & 13.17          & 20.43          & 2.24              \\
+        Wolf and Jolion (2003)         & 70.01      & 95.21      & 79.56          & 14.79          & 15.22          & 2.45              \\
+        Bardley and Roth (2007)        & 79.68      & 80.17      & 78.50          & 13.32          & 12.36          & 12.47             \\
+        Khurshidら (2009)              & 70.57      & 87.86      & 76.51          & 13.21          & 15.28          & 6.65              \\
+        Singhら (2012)                 & 58.78      & 81.68      & 65.12          & 11.57          & 21.59          & 11.42             \\
+        提案手法                       & 75.51      & 96.68      & \textbf{84.81} & \textbf{15.01} & \textbf{12.30} & \textbf{1.63}     \\
+        \hline
+    \end{tabular}
+\end{table*}
+
+
+ストローク幅とテキストサイズが変化する劣化文書画像について、異なる手法の視覚的結果(図\ref{fig5})でも、同様であるとわかる。
+図\ref{fig5}の結果は、Niblack (1986)とBernsen (1986)の二値化手法では、非テキスト領域に黒いノイズが発生することを示している。
+Wellner (1993)、 Sauvola と Pietaksinen (2000), Wolf と Jolion (2003), Bardley と Roth (2007), 
+Khurshidら (2009)、Singhら (2012) の各二値化手法は、文字が密集した画像や文字のサイズが変わる画像からテキストピクセルを完全に取り出すことができない。
+提案手法は、このような画像に対して最良の結果となる。
+低コントラスト画像に対する実験では、Sauvola法と同様に、提案手法はそのような画像に対して良好な二値化結果が得られない。
+図\ref{fig6}のF値は、Sauvola法と比較して、提案手法がこのような種類の画像に対してもより多くの真の画素を取得することを示している。
+
+\begin{figure}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig6.png}
+        \caption{(a) 入力画像(HDIBCO-2010の低コントラスト画像H06.tif)、(b) Sauvola法(F値 = 31.13)、(c) 提案手法(F値 = 39.68)}
+        \label{fig6}
+    \end{center}
+\end{figure}
+
+
+\subsection{OCR基準の評価}
+
+二値化の性能は、光学式文字認識(OCR)システムの認識過程に直接影響する。
+「レーベンシュタイン距離とは、2つの文字列の類似度を表す指標である。
+その距離は、ある文字列を別の文字列に変換するのに必要な削除、挿入、置換の数である」と、Levenshteinは定義した。
+手書きOCRでは満足な結果が得られないため、この方法は機械印刷文書の評価にのみ使用できる。
+提案手法と既存手法の二値化結果を、無料のオンラインOCR (Anon, 0000g)\cite{bib32}を使って分析する。
+より高品質な二値化を行うためには、グラウンド・トゥルースのOCR結果と、二値画像のOCR結果とのレーベンシュタイン距離を、より小さくする必要がある。
+データセットから選択した画像の一部について、提案手法および他の手法でのOCR結果によるレーベンシュタイン距離を、図\ref{fig7}に示す。
+この結果は、ストロークの幅とテキストのサイズが変化する画像に対して、提案手法が最良の性能であることを示している。
+
+
+\begin{figure*}[t]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/Fig7.png}
+        \caption{DIBCO-2011データセットの画像 PR3.png の一部に対するOCR結果とレーベンシュタイン距離}
+        \label{fig7}
+    \end{center}
+\end{figure*}
+
+
+\section{結論}
+
+本論文では、最新の二値化手法であるSauvolaを改良した適応的二値化手法を提案した。
+Sauvola法では、ウィンドウサイズのパラメータは手動で設定する必要があり、
+異なる領域におけるテキストの特性の変化にかかわらず、画像全体に対して固定である。
+提案する手法は、ストローク幅変換行列を用いてウィンドウサイズを動的に計算する。
+視覚的および定量的な結果を示し、印刷画像および手書き画像において、
+提案手法の性能がSauvola法と比較して向上していることを示す。
+ストローク幅や文字サイズが変化する画像に対して、提案手法は、Otsu、Niblack、Bernsen、Wellner、Sauvola、Wolf、Bradley と Roth、NICK、Singhの二値化手法の二値化結果を上回る。
+
+
+\section{訳者の感想}
+劣化ではないが、撮影環境の影響によって画像品質が悪い帳票に対して、より適切に二値化できる可能性があると考え、この論文を選択した。
+実際にあったのは、両面印刷の紙を撮影したときに、裏に書いている文字が透けてしまい、文字認識がうまくいかなかったことがあった。
+この論文を見る限り、そのような場合にも対応できそうであると考えた。
+また、ウインドウサイズの調節によって、一部に色がついた帳票に対しても適切に二値化できる可能性があると考えた。
+
+\begin{thebibliography}{99}
+    \bibitem{bib1}
+    Otsu, N.,
+    \newblock “A threshold selection method from gray level histograms”,
+    \newblock { {\em IEEE Trans. Syst. Man Cybern}, Vol. 9, Issue 1, 1979, pp. 62–66. }
+    
+    \bibitem{bib2}
+    Pun, T.,
+    \newblock “A new method for gray-level picture threshold using the entropy of the histogram”,
+    \newblock { {\em Signal Processing 2}, Vol. 2, Issue 3, 1980, pp. 223-237. }
+    
+    \bibitem{bib3}
+    Pun, T.,
+    \newblock {“Entropic thresholding: a new approach”},
+    \newblock { {\em Computer Graphics and Image Processing}, Vol. 16, Issue 3, 1981, pp. 210-239.}
+    
+    \bibitem{bib4}
+    Johannsen, G. and Bille, J.,
+    \newblock “A threshold selection method using information measures”,
+    \newblock { {\em Proc. International Conference on Pattern Recognition}, 1982, pp. 140-143. }
+    
+    \bibitem{bib5}
+    Kapur, J.N., Sahoo, P.K., A.K.C., Wong.,
+    \newblock “A new method for gray-level picture thresholding using the entropy of the histogram”,
+    \newblock { {\em Computer Graphics and Image Processing}, Vol. 29, Issue 3, 1985, pp. 273-285. }
+    
+    \bibitem{bib6}
+    Kittler, J., Illingworth, J.,
+    \newblock “On Threshold Selection Using Clustering Criteria”,
+    \newblock { {\em IEEE Transactions on Systems, Man and Cybernetics}, Volume SMC-15, Issue 5, 1985, pp. 652-655. }
+    
+    \bibitem{bib7}
+    Abutaleb, A.S.,
+    \newblock “Automatic thresholding of gray-level pictures using two- dimensional entropy”,
+    \newblock { {\em Computer Graphics and Image Processing}, Vol. 47, Issue 1, 1989, pp. 22-32. }
+    
+    \bibitem{bib8}
+    Brink, A.D., Pendock, N.E.,
+    \newblock “Minimum cross entropy threshold selection. Pattern Recognit”,
+    \newblock { {\em Computer Graphics and Image Processing}, Vol. 29, Issue 1, 1996, pp. 179-188. }
+    
+    \bibitem{bib9}
+    Bernsen, J.,
+    \newblock “Dynamic thresholding of gray level images”,
+    \newblock { {\em Proceedings - International Conference on Pattern Recognition}, Vol. 3, No. 1, 1986, pp. 1251–1255. }
+    
+    \bibitem{bib10}
+    Niblack, W.,
+    \newblock { {\em An Introduction to Image Processing. Prentice-Hall, Englewood Cliffs}, pp. 115-116. }
+    
+    \bibitem{bib11}
+    Wellner, P.,
+    \newblock { {\em Adaptive Thresholding for the Digital Desk. Xerox, EPC1993-110}, 1993. }
+    
+    \bibitem{bib12}
+    Sauvola, J., Pietaksinen, M.,
+    \newblock “Adaptive document image binarization”,
+    \newblock { {\em Pattern Recognition}, Vol. 33, Issue 2, 2000, pp. 225-236. }
+    
+    \bibitem{bib13}
+    Yang, Y., Yan, H., 
+    \newblock “An adaptive logical method for binarization of degraded document images”,
+    \newblock { {\em Pattern Recognition}, Vol. 33, Issue 5, 2000, pp. 787–807. }
+    
+    \bibitem{bib14}
+    Wolf, C., Jolion, J.M.,
+    \newblock “Extraction and recognition of artificial text in multimedia documents”
+    \newblock { {\em Journal of Family Violence}, Vol. 18, Issue 6, 2003, pp. 309–316. }
+    
+    \bibitem{bib15}
+    Do, J., He, Q.D.M., Downton, A.C., Kim, J.H.,
+    \newblock “A comparison of binarization methods for historical archive documents”
+    \newblock { {\em In: Eighth International Conference on Document Analysis and Recognition (ICDAR’05)}, Vol. 1, Seoul, South Korea, 2005, pp. 538–542. }
+    
+    \bibitem{bib16}
+    Gatos, B., Ntirogiannis, K., Pratikakis, I.,
+    \newblock “ICDAR 2009 document image binarization contest (DIBCO 2009)”,
+    \newblock { {\em In: 10th International Conference on Document Analysis and Recognition}, Barcelona, 2009, pp. 1375–1382 }
+    
+    \bibitem{bib17}
+    Bardley, D., Roth, G.,
+    \newblock “Adaptive Thresholding using the Integral Image”.
+    \newblock { {\em Journal of Graphics GPU and Game Tools}, Vol. 12, Issue 2, 2007, pp. 13-21. }
+    
+    \bibitem{bib18}
+    Shafait, F., Keysers, D., Bruel, T.M.,
+    \newblock “Efficient implementation of local adaptive thresholding techniques using integral images”,
+    \newblock { {\em In: Proceedings of SPIE 6815 on Document Recognition and Retrieval XV}, 2018}
+    
+    \bibitem{bib19}
+    Khurshid, K., Siddiqi, I., Faure, C., Vincent, N.,
+    \newblock “Comparison of Niblack inspired methods for ancient document”,
+    \newblock { {\em In: Proceedings 16th IEEE International Conference on Document Recognition and Retrieval}, Vol. 7247, 2009, pp. 1–10. }
+    
+    \bibitem{bib20}
+    Zhou, S., Liu, C., Cui, Z., Gong, S., 
+    \newblock “An improved adaptive document image binarization method”,
+    \newblock { {\em In: Proceedings of 2nd IEEE International Conference on Image Signal Processing}, Vol. 7, 2009, pp. 1–5. }
+    
+    \bibitem{bib21}
+    Kawano, H., Oohama, H., Maeda, H., Okada, Y., Ikoma, N.,
+    \newblock “Degraded document image binarization combining local statistics”,
+    \newblock { {\em In: IEEE International Joint Conference (ICROS-SICE).}, 2009, pp. 439–443. }
+    
+    \bibitem{bib22}
+    Lu, S., Tan, C.L.
+    \newblock “Document image binarization using background estimation and stroke edges”,
+    \newblock { {\em In: IEEE International Joint Conference (ICROS-SICE).}, Vol. 13, 2010, pp. 303–314. }
+    
+    \bibitem{bib23}
+    Singh, T.R., Roy, S., Singh, O.I., Sinam, T., Singh, K.M.,
+    \newblock “A new local adaptive thresholding technique in binarization”,
+    \newblock { {\em Communications in Computer and Information Science}, Vol. 8, Issue 6, 2011, pp. 271-277. }
+    
+    \bibitem{bib24}
+    Singh, O.I., Sinam, T., James, O., Singh, T.R.,
+    \newblock “Local contrast and mean based thresholding technique in binarization”,
+    \newblock { {\em International Journal of Computer Applications}, Vol. 51, No. 6, 2012, pp. 5-10. }
+    
+    
+    \bibitem{bib25}
+    Natarajan, J., Sreedevi, I.,
+    \newblock “Enhancement of ancient manuscript images by log based binarization technique”,
+    \newblock { {\em AEU - International Journal of Electronics and Communications}, Vol. 75, No. 6, 2017, pp. 15-22. }
+    
+    \bibitem{bib26}
+    \newblock "Anon",
+    \newblock {users.iit.demokritos.gr/~bgat/DIBCO2009/benchmark}
+    
+    \bibitem{bib27}
+    \newblock "Anon",
+    \newblock {https://users.iit.demokritos.gr/~bgat/H-DIBCO2010/benchmark/}
+    
+    \bibitem{bib28}
+    \newblock "Anon",
+    \newblock {utopia.duth.gr/~ipratika/DIBCO2011/resources}
+    
+    \bibitem{bib29}
+    \newblock "Anon",
+    \newblock {utopia.duth.gr/ipratika/HDIBCO2012/benchmark}
+    
+    \bibitem{bib30}
+    \newblock "Anon",
+    \newblock {https://vc.ee.duth.gr/h-dibco2016/benchmark.}
+    
+    \bibitem{bib31}
+    \newblock "Anon",
+    \newblock {https://vc.ee.duth.gr/dibco2017}
+    
+    \bibitem{bib32}
+    \newblock "Anon",
+    \newblock "IMAGE TO TEXT CONVERTER - OCR ONLINE",
+    \newblock {https://www.onlineocr.net/}
+\end{thebibliography}
+
+\end{document}
