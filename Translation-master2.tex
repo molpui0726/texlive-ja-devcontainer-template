@@ -153,8 +153,16 @@ OpenCV を実行するために、我々は主に PDF 前処理のための色�
 
 
 \section{提案手法}
-本手法のワークフローを図 1 に示す。
+本手法のワークフローを図 \ref{fig1} に示す。
 提案手法は、PDF 前処理、表検出、セル値抽出の 3 つの要素で構成する。
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/master2/Fig1.png}
+        \caption{我々のワークフローのアーキテクチャ}
+        \label{fig1}
+    \end{center}
+\end{figure}
 
 \begin{enumerate}
     \item \textbf{PDF前処理}:
@@ -179,8 +187,8 @@ OpenCV を実行するために、我々は主に PDF 前処理のための色�
 
 \begin{enumerate}
     \item \textbf{彩度の抽出}:
-    「元画像」 (図 2(a)) の色空間を BGR (青、緑、赤) から HSV (色相、彩度、明度) に変換し、彩度を抽出する。
-    結果を「彩度画像」 (図2(b)) として保存する。
+    「元画像」 (図 \ref{fig2}(a)) の色空間を BGR (青、緑、赤) から HSV (色相、彩度、明度) に変換し、彩度を抽出する。
+    結果を「彩度画像」 (図 \ref{fig2}(b)) として保存する。
     \item \textbf{二値画像の取得}:
     「彩度画像」を読み込み、グレースケール化、ガウシアンぼかし、その後、大津の二値化を画像に適用する。
     \item \textbf{関心領域 （ROI） の検出}:
@@ -189,10 +197,28 @@ OpenCV を実行するために、我々は主に PDF 前処理のための色�
     さらに、輪郭の面積を計算してノイズを除去する。
     \item \textbf{ROI を元画像に置換}:
     バウンディングボックスの座標を取得し、numpy スライシングで ROI を抽出することで、「元画像」に ROI を置換できるようにする。
-    画像を「置換画像」 (図2(c)に示す) として保存する。
+    画像を「置換画像」 (図 \ref{fig2}(c)) として保存する。
 \end{enumerate}
 
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/master2/Fig2.png}
+        \caption{各処理段階における3種類の画像 ((a) 元画像 (b) 彩度画像 (c) 置換画像)}
+        \label{fig2}
+    \end{center}
+\end{figure}
+
+%
+%
+%
+%
+%
 % アルゴリズム 1 を入れる
+%
+%
+%
+%
+%
 
 アルゴリズム 1 について、P を PDF ファイル内のページ数、C を置換対象の輪郭の数とする。
 PDF から画像への変換操作の計算量は $\mathcal{O}(1)$ である。
@@ -217,18 +243,26 @@ PDF から画像への変換操作の計算量は $\mathcal{O}(1)$ である。
     ここで、カーネルを使用して連続的に収縮と膨張を行う方法をとる。
     これらの線を識別しようとするにあたり、最も適切な水平カーネルと垂直カーネルを選択する方法をとる。
     これは、線を正確に識別し、画像内の表の特定に非常に役立つ。
-    図 3 (a) と図 3 (b) に線の識別結果を示しており、それぞれ水平線と垂直線を示す。
+    図 \ref{fig3} (a) と図 \ref{fig3} (b) に線の識別結果を示しており、それぞれ水平線と垂直線を示す。
     \item \textbf{すべての輪郭の取得}:
     画像内のすべての水平線と垂直線に関する 2 つの画像をそれぞれ取得した後、これら 2 つの画像の合計を取得する。
     これにより、元画像内の表の枠だけでなく、元の表内の情報も除外される。
     したがって、表を正確に特定し、誤った抽出に起因するノイズの問題を軽減できる。
     一連の操作の後、画像内の表の位置と形状を正常に取得する。
-    結果を図 3(c) に示す。
-    輪郭とは、同じ色または強度を持つ連続するすべての点（境界に沿った点）を結ぶ曲線として簡単に説明できる。
+    結果を図 \ref{fig3}(c) に示す。
+    輪郭とは、同じ色または強度を持つ連続するすべての点 (境界に沿った点) を結ぶ曲線として簡単に説明できる。
     輪郭は、形状分析、オブジェクト検出、および認識に役立つツールである[24]。
     findContours 関数を利用して、表自体と表内のすべてのセルを含む元画像内のすべての輪郭を取得し、セルの座標と幅、高さを取得する。
     後続の処理を容易にするために、画像内の各輪郭を上から下、左から右の方法で並べ替える。
 \end{enumerate}
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/master2/Fig3.png}
+        \caption{表抽出における3種類の画像 ((a) 垂直線 (b) 水平線 (c) 画像から取得した表構造)}
+        \label{fig3}
+    \end{center}
+\end{figure}
 
 
 \subsection{セル値抽出}
@@ -284,7 +318,7 @@ Tesseract は光学式文字認識 (OCR) ツールであり、さまざまなフ
     そうでない場合、2 つの表は完全に別のものとする。
     この手法では、ページをまたがる表があるかどうかを判定するために、以下の規則が策定されている。
     \begin{itemize}
-        \item 連続する2つのページにある表のみが、ページをまたがる表になり得る。
+        \item 連続する 2 つのページにある表のみが、ページをまたがる表になり得る。
         \item 2 番目の表は最初の表と同じ幅でなければならず、そうして初めてページをまたがる表になることができる。
         \item 最初の表の下部は、そのページの下端よりも下にある必要がある。
         \item 2 番目の表の上部は、そのページの上部領域にある必要がある。
@@ -372,7 +406,7 @@ Tabula は多くの形式の表を検出できる。
 
 \textbf{パラメータ感度}:
 表検出を行う際、カーネルのサイズは水平線と垂直線の検出において重要な役割を果たし、したがって表内のセルを認識する精度に大きな影響を与える。
-カーネルサイズの影響を明確にするために、図 4 の例を示す。
+カーネルサイズの影響を明確にするために、図 \ref{fig4} の例を示す。
 我々は実験を通して、カーネルの大きさは水平線の抽出よりも、垂直線の抽出に大きな影響を与えるという結論を出した。
 影響を 2 つのカテゴリに分ける：
 
@@ -380,6 +414,14 @@ Tabula は多くの形式の表を検出できる。
     \item カーネルサイズが小さいと、画像上により多くのノイズの多い垂直線が現れる。これは、「1」、「I」、「T」などの文字がテキストに含まれており、OpenCV が誤認識するためである。
     \item カーネルサイズが大きいと、表の線、特に垂直線が失われる。
 \end{itemize}
+
+\begin{figure}[tp]
+    \begin{center}
+        \includegraphics*[width=7cm]{image/master/master2/Fig4.png}
+        \caption{異なるカーネルサイズによる出力結果: (a) カーネルサイズ 62 (b) カーネルサイズ 15 (c) カーネルサイズ 7}
+        \label{fig4}
+    \end{center}
+\end{figure}
 
 したがって、画像の幅に基づいて適切な値を設定し、比較的満足のいく結果を得る。
 
@@ -428,365 +470,141 @@ Camelot を使用すると、特定のテキスト領域を表として誤認す
 % ここまで翻訳済み
 
 
-\begin{figure}[tp]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/master/Fig2.png}
-        \caption{異なるストローク幅の文字がある文書画像}
-        \label{fig2}
-    \end{center}
-\end{figure}
-
-
-
-
-
-
-
-
-
-
-\subsection{統計的結果}
-
-統計的結果は、定量的尺度を用いて評価する：
-% ピーク信号対雑音比: 画質の再現性に影響を与える、信号が取りうる最大のパワーと劣化をもたらすノイズの比率を表す工学用語
-% 画像がどれだけ劣化をしたかを示す値。値が小さいほど劣化していて、大きいほど元の画像に近い。
-F値(FM)、ピーク信号対雑音比(PSNR)、
-% 画像処理タスクにおける背景の誤検出率を評価する指標。通常は、背景と誤って認識された前景領域の割合を示す。
-負率メトリック(Negative Rate Metric, NRM)、
-誤分類ペナルティメトリック(Misclassification penalty metric, MPM)、
-距離相互歪みメトリック(Distance Reciprocal Distortion Metric, DRD)。
-% 文書解析と認識に関する国際会議 ICDAR
-% ICDAR2015は、風景写真中のテキスト領域にアノテーションされた1000枚のトレーニング画像と500枚のテスト画像
-これらの評価指標は、国際的文書画像の二値化結果の比較(Gatosら, 2009; Pratikakisら, 2016, 2017)
-で提案されたICDARベンチマーク評価指標から採用した。
-これらの評価指標は、取得した二値画像とグラウンド・トゥルースの画像との類似度を定義する。
-
-\textbf{FM}は適合率(PR)と再現率(RC)を組み合わせ、総合的に二値化精度を決定する。
-適合率(PR)は二値画像でのノイズを、再現率(RC)はテキスト本文の精度をそれぞれ示す。
-これら3つの値が高いほど、出力する二値画像($I_B$)が理想的な二値画像($I_{GT}$)に近いことを示す。
-
-\begin{equation}\label{eq3}
-    FM = \frac{2 \times RC \times PR}{RC + PR}
-\end{equation}
-
-$PR = \frac{N_{TT}}{N_{FT} + N_{TT}}$、$RC = \frac{N_{TT}}{N_{FNT} + N_{TT}}$とする。
-
-ここで、$N_{TT}$は真のテキストピクセルの数、$N_{FT}$は偽のテキストピクセルの数、$N_{FNT}$は偽の非テキストピクセルの数である。
-
-\textbf{PSNR}は出力結果が理想的な二値画像に近いかどうかを測定する指標である。
-PSNRの値が高いほど、二値化の品質が良いことを示す。
-
-\begin{equation}\label{eq4}
-    PSNR = 10 \times \log (\frac{D^2}{MSE}),
-\end{equation}
-
-$D$は画像のコントラストである。二値画像の場合、$D$の値は1とする。$MSE$は、平均二乗誤差である。
-
-\begin{equation}\label{eq5}
-    MSE = \sum_{i=1}^M \sum_{j=1}^N \frac{ (I_B(i, j) - I_{GT}(i, j))^2 }{MN}
-\end{equation}
-
-$I_B(i, j)$は理想的な二値画像の画素値、$I_{GT}(i, j)$は同ピクセルにおける理想的な画素値をそれぞれ示す。
-
-\textbf{NRM}は、$I_{GT}$と$I_B$の間のピクセル非類似率を測定する。
-$NRM$の値が低いほど、二値化が適切であることを示す。
-
-\begin{equation}\label{eq6}
-    NRM = \frac{P + Q}{2}
-\end{equation}
-
-ここで、
-\begin{equation}\label{eq7}
-    P = \frac{N_{FNT}}{N_{FNT} + N_{TT}},
-\end{equation}
-
-\begin{equation}\label{eq8}
-    Q = \frac{N_{FT}}{N_{FT} + N_{TNT}}
-\end{equation}
-である。
-
-\textbf{MPM}は、以下のように定義されている。
-
-\begin{equation}\label{eq9}
-    MPM = \frac{ \sum_{i=1}^{C_{FNT}} d_{FNT}^i + \sum_{j=1}^{C_{FT}} d_{FT}^j }{2D}
-\end{equation}
-
-ここで、$d_{FNT}^i$は偽の非テキストの距離を表し、
-$d_{FT}^j$は$j$番目の偽のテキストピクセルについて、グラウンド・トゥルースにおけるテキスト輪郭からの距離を表す。
-正規化係数$D$は、グラウンド・トゥルースのすべてのピクセルからテキスト輪郭までの距離の総和である。
-この指標は、出力した二値画像がどれだけのグラウンド・トゥルースの輪郭を表現しているかを表す。
-$MPM$の値が小さいほど、二値化アルゴリズムの質が高いことを示す。
-
-\textbf{DRD}は二値化した文書画像の視覚的な歪みを測定する指標であり、Luら(2004)によって導入された。
-この指標は、画像に対する人間の視覚的知覚と手法の性能の間に相関があることを示す。
-
-上記のすべてのデータセットを用いた提案手法と、Sauvola法の平均定量結果を、表\ref{table3}に示す。
-表\ref{table3}の定量的結果と図\ref{fig3}、図\ref{fig4}、図\ref{fig5}の視覚的結果から、すべての種類の劣化画像(機械印刷と手書き)に対して、
-提案手法がSauvola法よりも良い結果を示すことがわかる。
-
-
-\begin{figure}[tp]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/master/Fig3.png}
-        \caption{(a) 入力画像 (DIBCO-2009のP02.bmp)、(b) Sauvola法の出力(F値 = 77.14)、(c) 提案手法 (F値 = 91.72)}
-        \label{fig3}
-    \end{center}
-\end{figure}
-
-\begin{figure}[tp]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/master/Fig4.png}
-        \caption{(a) 入力画像 (DIBCO-2009のH04.bmp)、(b) Sauvola法の出力 (F値 = 73.15)、(c) 提案手法 (F値 = 85.79)}
-        \label{fig4}
-    \end{center}
-\end{figure}
-
-\begin{figure}[tp]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/master/Fig5.png}
-        \caption{(a) DIBCO-2011データセットの画像PR4.pngの一部(テキストが密集し、ストロークが変化)、(b)グラウンド・トゥルース、(c)Otsu法、(d)Niblack法、(e)Bernsen法、(f)Wellner法、(g)Sauvola法、(h)Wolf法、(i)Bradley と Rothの方法、(j)NICK法、(k)Singhら(2012)の方法、(l)提案手法}
-        \label{fig5}
-    \end{center}
-\end{figure}
-
-また、ストロークの幅と文字サイズが変化する印刷文書画像に対しても実験を行った。
-DIBCO-2011の劣化文書画像PR1.png、PR3.png、PR4、PR6、DIBCO-2009のP02.bmp、P03.bmp、
-DIBCO-2017データセットの13.bmp、14.bmp、15.bmp、20.bmpの10枚を選択し、
-選択した既存技術と提案手法の平均統計指標を、表\ref{table4}に示す。
-結果、提案手法はこのような種類の画像に対して、他の手法よりも優れていることがわかった。
-
-
-\begin{table*}[tp]
-    \centering
-    \caption{ストローク幅が異なり密集したテキストがある画像に対する様々な手法の定量的比較}
-    \label{table4}
-    \begin{tabular}{lllllll}
-        \hline
-                                       & 再現率(\%) & 適合率(\%) & FM(\%)         & PSNR           & NRM            & MPM($\times$1000) \\
-        \hline
-        Otsu (1979)                    & 95.23      & 68.54      & 74.14          & 12.79          & 13.41          & 104.55            \\
-        Bernsen (1986)                 & 89.99      & 28.69      & 41.99          & 5.14           & 22.10          & 213.38            \\ 
-        Niblack (1986)                 & 85.35      & 30.75      & 43.53          & 5.69           & 21.82          & 185.99            \\
-        Wellner (1993)                 & 45.52      & 91.83      & 59.04          & 11.52          & 27.49          & 4.91              \\
-        Sauvola and Pietaksinen (2000) & 59.27      & 98.41      & 73.11          & 13.17          & 20.43          & 2.24              \\
-        Wolf and Jolion (2003)         & 70.01      & 95.21      & 79.56          & 14.79          & 15.22          & 2.45              \\
-        Bardley and Roth (2007)        & 79.68      & 80.17      & 78.50          & 13.32          & 12.36          & 12.47             \\
-        Khurshidら (2009)              & 70.57      & 87.86      & 76.51          & 13.21          & 15.28          & 6.65              \\
-        Singhら (2012)                 & 58.78      & 81.68      & 65.12          & 11.57          & 21.59          & 11.42             \\
-        提案手法                       & 75.51      & 96.68      & \textbf{84.81} & \textbf{15.01} & \textbf{12.30} & \textbf{1.63}     \\
-        \hline
-    \end{tabular}
-\end{table*}
-
-
-ストローク幅とテキストサイズが変化する劣化文書画像について、異なる手法の視覚的結果(図\ref{fig5})でも、同様であるとわかる。
-図\ref{fig5}の結果は、Niblack (1986)とBernsen (1986)の二値化手法では、非テキスト領域に黒いノイズが発生することを示している。
-Wellner (1993)、 Sauvola と Pietaksinen (2000), Wolf と Jolion (2003), Bardley と Roth (2007), 
-Khurshidら (2009)、Singhら (2012) の各二値化手法は、文字が密集した画像や文字のサイズが変わる画像からテキストピクセルを完全に取り出すことができない。
-提案手法は、このような画像に対して最良の結果となる。
-低コントラスト画像に対する実験では、Sauvola法と同様に、提案手法はそのような画像に対して良好な二値化結果が得られない。
-図\ref{fig6}のF値は、Sauvola法と比較して、提案手法がこのような種類の画像に対してもより多くの真の画素を取得することを示している。
-
-\begin{figure}[t]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/master/Fig6.png}
-        \caption{(a) 入力画像(HDIBCO-2010の低コントラスト画像H06.tif)、(b) Sauvola法(F値 = 31.13)、(c) 提案手法(F値 = 39.68)}
-        \label{fig6}
-    \end{center}
-\end{figure}
-
-
-\subsection{OCR基準の評価}
-
-二値化の性能は、光学式文字認識(OCR)システムの認識過程に直接影響する。
-「レーベンシュタイン距離とは、2つの文字列の類似度を表す指標である。
-その距離は、ある文字列を別の文字列に変換するのに必要な削除、挿入、置換の数である」と、Levenshteinは定義した。
-手書きOCRでは満足な結果が得られないため、この方法は機械印刷文書の評価にのみ使用できる。
-提案手法と既存手法の二値化結果を、無料のオンラインOCR (Anon, 0000g)\cite{bib32}を使って分析する。
-より高品質な二値化を行うためには、グラウンド・トゥルースのOCR結果と、二値画像のOCR結果とのレーベンシュタイン距離を、より小さくする必要がある。
-データセットから選択した画像の一部について、提案手法および他の手法でのOCR結果によるレーベンシュタイン距離を、図\ref{fig7}に示す。
-この結果は、ストロークの幅とテキストのサイズが変化する画像に対して、提案手法が最良の性能であることを示している。
-
-
-\begin{figure*}[t]
-    \begin{center}
-        \includegraphics*[width=7cm]{image/master/Fig7.png}
-        \caption{DIBCO-2011データセットの画像 PR3.png の一部に対するOCR結果とレーベンシュタイン距離}
-        \label{fig7}
-    \end{center}
-\end{figure*}
-
-
-\section{結論}
-
-本論文では、最新の二値化手法であるSauvolaを改良した適応的二値化手法を提案した。
-Sauvola法では、ウィンドウサイズのパラメータは手動で設定する必要があり、
-異なる領域におけるテキストの特性の変化にかかわらず、画像全体に対して固定である。
-提案する手法は、ストローク幅変換行列を用いてウィンドウサイズを動的に計算する。
-視覚的および定量的な結果を示し、印刷画像および手書き画像において、
-提案手法の性能がSauvola法と比較して向上していることを示す。
-ストローク幅や文字サイズが変化する画像に対して、提案手法は、Otsu、Niblack、Bernsen、Wellner、Sauvola、Wolf、Bradley と Roth、NICK、Singhの二値化手法の二値化結果を上回る。
 
 
 \section{訳者の感想}
-劣化ではないが、撮影環境の影響によって画像品質が悪い帳票に対して、より適切に二値化できる可能性があると考え、この論文を選択した。
-実際にあったのは、両面印刷の紙を撮影したときに、裏に書いている文字が透けてしまい、文字認識がうまくいかなかったことがあった。
-この論文を見る限り、そのような場合にも対応できそうであると考えた。
-また、ウインドウサイズの調節によって、一部に色がついた帳票に対しても適切に二値化できる可能性があると考えた。
+画像処理のみで処理が完結する、文字抽出するなど、かなり似ている論文が見つかった。
+時間は少しだけ勝っているが、1秒も変わらないので、有意差はあまりなさそう。
+また、帳票では重複する表やページをまたがる表を考慮しなくてよい一方、下線部の取得や複雑な形の表の対応が必要であるため、帳票向けとしてこの論文のツールとは別の価値を生めそう。
+
+他の論文では、最近は機械学習を用いたり、登録している帳票のパターンに基づいて記入欄を検出する方法が多くあった。
+それらには、実行時間や、帳票のパターンを登録する必要があるという面で制約があることを示して予定。
+
 
 \begin{thebibliography}{99}
     \bibitem{bib1}
-    Otsu, N.,
-    \newblock “A threshold selection method from gray level histograms”,
-    \newblock { {\em IEEE Trans. Syst. Man Cybern}, Vol. 9, Issue 1, 1979, pp. 62–66. }
-    
+    B. Yildiz, K. Kaiser, and S. Miksch,
+    \newblock "pdf2table: A method to extract table information from pdf files",
+    \newblock { in {\em IICAI}, 2005, pp. 1773–1785.}
+
     \bibitem{bib2}
-    Pun, T.,
-    \newblock “A new method for gray-level picture threshold using the entropy of the histogram”,
-    \newblock { {\em Signal Processing 2}, Vol. 2, Issue 3, 1980, pp. 223-237. }
+    J.-Y. Ramel, M. Crucianu, N. Vincent, and C. Faure,
+    \newblock “Detection, extraction and representation of tables”,
+    \newblock { in {\em Seventh International Conference on Document Analysis and Recognition 2003. Proceedings.}, IEEE, 2003, pp. 374–378.}
     
     \bibitem{bib3}
-    Pun, T.,
-    \newblock {“Entropic thresholding: a new approach”},
-    \newblock { {\em Computer Graphics and Image Processing}, Vol. 16, Issue 3, 1981, pp. 210-239.}
-    
+    D. Lopresti and G. Nagy,
+    \newblock {“A tabular survey of automated table processing”},
+    \newblock { in {\em International Workshop on Graphics Recognition}, Springer, 1999, pp. 93–120.}
+
     \bibitem{bib4}
-    Johannsen, G. and Bille, J.,
-    \newblock “A threshold selection method using information measures”,
-    \newblock { {\em Proc. International Conference on Pattern Recognition}, 1982, pp. 140-143. }
-    
+    R. Zanibbi, D. Blostein, and J. Cordy,
+    \newblock {“A survey of table recognition: Models, observations, transformations, and inferences, 2003”},
+    \newblock { {\em Online: http://www.cs.queensu.ca/˜cordy/Papers/IJDARTables.pdf}, Last Checked, pp. 12–01, 2007.}
+
     \bibitem{bib5}
-    Kapur, J.N., Sahoo, P.K., A.K.C., Wong.,
-    \newblock “A new method for gray-level picture thresholding using the entropy of the histogram”,
-    \newblock { {\em Computer Graphics and Image Processing}, Vol. 29, Issue 3, 1985, pp. 273-285. }
-    
+    D. W. Embley, D. Lopresti, and G. Nagy,
+    \newblock “Notes on contemporary table recognition”,
+    \newblock { in {\em International Workshop on Document Analysis Systems}, Springer, 2006, pp. 164–175.}
+
     \bibitem{bib6}
-    Kittler, J., Illingworth, J.,
-    \newblock “On Threshold Selection Using Clustering Criteria”,
-    \newblock { {\em IEEE Transactions on Systems, Man and Cybernetics}, Volume SMC-15, Issue 5, 1985, pp. 652-655. }
+    X. Wang,
+    \newblock “Tabular abstraction, editing, and formatting”,
+    \newblock { 2016 }
     
     \bibitem{bib7}
-    Abutaleb, A.S.,
-    \newblock “Automatic thresholding of gray-level pictures using two- dimensional entropy”,
-    \newblock { {\em Computer Graphics and Image Processing}, Vol. 47, Issue 1, 1989, pp. 22-32. }
+    M. F. Hurst,
+    \newblock The interpretation of tables in texts",
+    \newblock { 2000 }
     
     \bibitem{bib8}
-    Brink, A.D., Pendock, N.E.,
-    \newblock “Minimum cross entropy threshold selection. Pattern Recognit”,
-    \newblock { {\em Computer Graphics and Image Processing}, Vol. 29, Issue 1, 1996, pp. 179-188. }
+    M. Hurst,
+    \newblock “Layout and language: Challenges for table understanding on the web”,
+    \newblock { in {\em Proceedings of the International Workshop on Web Document Analysis}, 2001, pp. 27–30. }
     
     \bibitem{bib9}
-    Bernsen, J.,
-    \newblock “Dynamic thresholding of gray level images”,
-    \newblock { {\em Proceedings - International Conference on Pattern Recognition}, Vol. 3, No. 1, 1986, pp. 1251–1255. }
+    H.-H. Chen, S.-C. Tsai, and J.-H. Tsai,
+    \newblock “Mining tables from large scale html texts”,
+    \newblock { in {\em Proceedings of the 18th conference on Computational linguistics-Volume 1}, Association for Computational Linguistics, 2000, pp. 166–172. }
     
     \bibitem{bib10}
-    Niblack, W.,
-    \newblock { {\em An Introduction to Image Processing. Prentice-Hall, Englewood Cliffs}, pp. 115-116. }
+    A. Tengli, Y. Yang, and N. L. Ma,
+    \newblock “Learning table extraction from examples”,
+    \newblock { in {\em Proceedings of the 20th international conference on Computational Linguistics. Association for Computational Linguistics}, 2004, p. 987. }
     
     \bibitem{bib11}
-    Wellner, P.,
-    \newblock { {\em Adaptive Thresholding for the Digital Desk. Xerox, EPC1993-110}, 1993. }
+    Y. Liu, K. Bai, P. Mitra, and C. L. Giles,
+    \newblock “Tableseer: automatic table metadata extraction and searching in digital libraries”,
+    \newblock { in {\em Proceedings of the 7th ACM/IEEE-CS joint conference on Digital libraries0}, 2007, pp. 91–100. }
     
     \bibitem{bib12}
-    Sauvola, J., Pietaksinen, M.,
-    \newblock “Adaptive document image binarization”,
-    \newblock { {\em Pattern Recognition}, Vol. 33, Issue 2, 2000, pp. 225-236. }
-    
+    M. O. Perez-Arriaga, T. Estrada, and S. Abad-Mota,
+    \newblock “Tao: system for table detection and extraction from pdf documents”,
+    \newblock { in {\em The Twenty-Ninth International Flairs Conference}, 2016. }
+
     \bibitem{bib13}
-    Yang, Y., Yan, H., 
-    \newblock “An adaptive logical method for binarization of degraded document images”,
-    \newblock { {\em Pattern Recognition}, Vol. 33, Issue 5, 2000, pp. 787–807. }
-    
+    S. Shetty, H. Srinivasan, M. Beal, and S. Srihari,
+    \newblock “Segmentation and labeling of documents using conditional random fields”,
+    \newblock { in {\em Document Recognition and Retrieval XIV}, vol. 6500. International Society for Optics and Photonics, 2007, p. 65000U. }
+
     \bibitem{bib14}
-    Wolf, C., Jolion, J.M.,
-    \newblock “Extraction and recognition of artificial text in multimedia documents”
-    \newblock { {\em Journal of Family Violence}, Vol. 18, Issue 6, 2003, pp. 309–316. }
+    D. Pinto, A. McCallum, X. Wei, and W. B. Croft,
+    \newblock “Table extraction using conditional random fields”
+    \newblock { in {\em Proceedings of the 26th annual international ACM SIGIR conference on Research and development in informaion retrieval}, 2003, pp. 235–242. }
     
     \bibitem{bib15}
-    Do, J., He, Q.D.M., Downton, A.C., Kim, J.H.,
-    \newblock “A comparison of binarization methods for historical archive documents”
-    \newblock { {\em In: Eighth International Conference on Document Analysis and Recognition (ICDAR’05)}, Vol. 1, Seoul, South Korea, 2005, pp. 538–542. }
-    
+    G. Bradski and A. Kaehler,
+    \newblock “Learning OpenCV: Computer vision with the OpenCV library”
+    \newblock { O’Reilly Media, Inc.”, 2008. }
+
     \bibitem{bib16}
-    Gatos, B., Ntirogiannis, K., Pratikakis, I.,
-    \newblock “ICDAR 2009 document image binarization contest (DIBCO 2009)”,
-    \newblock { {\em In: 10th International Conference on Document Analysis and Recognition}, Barcelona, 2009, pp. 1375–1382 }
-    
+    G. Xie and W. Lu,
+    \newblock “Image edge detection based on opencv”,
+    \newblock { {\em International Journal of Electronics and Electrical Engineering}, vol. 1, no. 2, pp. 104–6, 2013. }
+
     \bibitem{bib17}
-    Bardley, D., Roth, G.,
-    \newblock “Adaptive Thresholding using the Integral Image”.
-    \newblock { {\em Journal of Graphics GPU and Game Tools}, Vol. 12, Issue 2, 2007, pp. 13-21. }
+    P. P´aszt´o and P. Hubinsk`y,
+    \newblock "Application of a visual system for mobile robot navigation (opencv)",
+    \newblock { {\em AT\&P Journal Plus}, vol. 1, pp. 62-64, 2010. }
     
     \bibitem{bib18}
-    Shafait, F., Keysers, D., Bruel, T.M.,
-    \newblock “Efficient implementation of local adaptive thresholding techniques using integral images”,
-    \newblock { {\em In: Proceedings of SPIE 6815 on Document Recognition and Retrieval XV}, 2018}
-    
+    P. Shopa, N. Sumitha, and P. Patra,
+    \newblock “Traffic sign detection and recognition using opencv”,
+    \newblock { in {\em International conference on information communication and embedded systems (ICICES2014)}. IEEE, 2014, pp. 1-6. }
+
     \bibitem{bib19}
-    Khurshid, K., Siddiqi, I., Faure, C., Vincent, N.,
-    \newblock “Comparison of Niblack inspired methods for ancient document”,
-    \newblock { {\em In: Proceedings 16th IEEE International Conference on Document Recognition and Retrieval}, Vol. 7247, 2009, pp. 1–10. }
+    M. Russell and S. Fischaber,
+    \newblock “Opencv based road sign recognition on zynq”,
+    \newblock { in {\em 2013 11th IEEE International Conference on Industrial Informatics (INDIN)}. IEEE, 2013, pp. 596-601. }
     
     \bibitem{bib20}
-    Zhou, S., Liu, C., Cui, Z., Gong, S., 
-    \newblock “An improved adaptive document image binarization method”,
-    \newblock { {\em In: Proceedings of 2nd IEEE International Conference on Image Signal Processing}, Vol. 7, 2009, pp. 1–5. }
+    A. Lorsakul and J. Suthakorn,
+    \newblock “Traffic sign recognition for intelligent vehicle/driver assistance system using neural network on opencv”,
+    \newblock { in {\em The 4th International Conference on Ubiquitous Robots and Ambient Intelligence}, 2007. }
     
     \bibitem{bib21}
-    Kawano, H., Oohama, H., Maeda, H., Okada, Y., Ikoma, N.,
-    \newblock “Degraded document image binarization combining local statistics”,
-    \newblock { {\em In: IEEE International Joint Conference (ICROS-SICE).}, 2009, pp. 439–443. }
+    V. Oliveira and A. Conci,
+    \newblock “Skin detection using hsv color space”,
+    \newblock { in {\em H. Pedrini, \& J. Marques de Carvalho, Workshops of Sibgrapi}. Citeseer, 2009, pp. 1-2. }
     
     \bibitem{bib22}
-    Lu, S., Tan, C.L.
-    \newblock “Document image binarization using background estimation and stroke edges”,
-    \newblock { {\em In: IEEE International Joint Conference (ICROS-SICE).}, Vol. 13, 2010, pp. 303–314. }
+    K. Nikolskaia, N. Ezhova, A. Sinkov, and M. Medvedev,
+    \newblock “Skin detection technique based on hsv color model and slic segmentation method”,
+    \newblock { in {\em Proceedings of the 4th Ural Workshop on Parallel, Distributed, and Cloud Computing for Young Scientists, Ural-PDC}, 2018, pp. 123-135. }
     
     \bibitem{bib23}
-    Singh, T.R., Roy, S., Singh, O.I., Sinam, T., Singh, K.M.,
-    \newblock “A new local adaptive thresholding technique in binarization”,
-    \newblock { {\em Communications in Computer and Information Science}, Vol. 8, Issue 6, 2011, pp. 271-277. }
+    M. S. Kalas,
+    \newblock “Real time face detection and tracking using opencv”,
+    \newblock { {\em international journal of soft computing and Artificial Intelligence}, vol. 2, no. 1, pp. 41-44, 2014. }
     
     \bibitem{bib24}
-    Singh, O.I., Sinam, T., James, O., Singh, T.R.,
-    \newblock “Local contrast and mean based thresholding technique in binarization”,
-    \newblock { {\em International Journal of Computer Applications}, Vol. 51, No. 6, 2012, pp. 5-10. }
-    
+    A. Mordvintsev and K. Abid,
+    \newblock “Opencv-python tutorials documentation”,
+    \newblock { {\em Obtenido de https://media.readthedocs.org/pdf/opencv-python-tutroals/latest/opencv-python-tutroals.pdf}, 2014. }
     
     \bibitem{bib25}
-    Natarajan, J., Sreedevi, I.,
-    \newblock “Enhancement of ancient manuscript images by log based binarization technique”,
-    \newblock { {\em AEU - International Journal of Electronics and Communications}, Vol. 75, No. 6, 2017, pp. 15-22. }
+    https://pypi.org/project/pytesseract/.
     
-    \bibitem{bib26}
-    \newblock "Anon",
-    \newblock {users.iit.demokritos.gr/~bgat/DIBCO2009/benchmark}
-    
-    \bibitem{bib27}
-    \newblock "Anon",
-    \newblock {https://users.iit.demokritos.gr/~bgat/H-DIBCO2010/benchmark/}
-    
-    \bibitem{bib28}
-    \newblock "Anon",
-    \newblock {utopia.duth.gr/~ipratika/DIBCO2011/resources}
-    
-    \bibitem{bib29}
-    \newblock "Anon",
-    \newblock {utopia.duth.gr/ipratika/HDIBCO2012/benchmark}
-    
-    \bibitem{bib30}
-    \newblock "Anon",
-    \newblock {https://vc.ee.duth.gr/h-dibco2016/benchmark.}
-    
-    \bibitem{bib31}
-    \newblock "Anon",
-    \newblock {https://vc.ee.duth.gr/dibco2017}
-    
-    \bibitem{bib32}
-    \newblock "Anon",
-    \newblock "IMAGE TO TEXT CONVERTER - OCR ONLINE",
-    \newblock {https://www.onlineocr.net/}
 \end{thebibliography}
 
 \end{document}
