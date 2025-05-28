@@ -12,6 +12,13 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+
+% アルゴリズムの見出しを日本語に変更
+\floatname{algorithm}{アルゴリズム}
+
 \def\Underline{\setbox0\hbox\bgroup\let\\\endUnderline}
 \def\endUnderline{\vphantom{y}\egroup\smash{\underline{\box0}}\\}
 
@@ -35,8 +42,8 @@
 
 
 \begin{abstract}
-    PDF (Portable Document Format) は最も普及したファイル形式の 1 つであり、特に教科書や論文などの教育文書において、元のグラフィック外観を保持しオンラインで容易に共有できるため有用である。
-    PDF ファイル内の表から情報を検出・抽出することで、教育的な知識グラフを構築するための豊富な構造化データを提供できる。
+    PDF (Portable Document Format) は最も普及したファイル形式の 1 つであり、特に教科書や論文などの教育文書において、元の外観を保持し、オンラインで容易に共有できるため有用である。
+    PDF ファイル内の表から情報を検出し、抽出することで、教育向けの知識グラフを構築するための豊富な構造化データを提供できる。
     しかし、既存の手法の多数は PDF パースツールや自然言語処理技術に依存しており、一般的に学習サンプルを必要とし、ページをまたがる表の処理が困難である。
     そこで本論文では、PDF の表からメタデータと具体的な値を抽出するための新しい OpenCV ベースのフレームワークを提案する。
     具体的には、まず表の視覚的な輪郭を強調し、水平・垂直の線を用いて表を特定し、各 PDF ページにおける表フレームの座標を取得する。
@@ -219,6 +226,23 @@ OpenCV を実行するために、我々は主に PDF 前処理のための色�
 %
 %
 %
+\begin{algorithm}
+    \caption{PDF の処理}
+    \begin{algorithmic}
+    \STATE \textbf{Input}: A PDF document $D$
+    \STATE \textbf{Output}: A set of images $I$
+    \STATE \textit{Initialisation} : $I = \Phi$
+    \FOR{each page $p$ in $D$}
+        \STATE $image \leftarrow pdf\_to\_image(p)$
+        \IF{$high\_saturated\_colors()$}
+            \STATE $image \leftarrow change\_image\_background(image)$
+        \ENDIF
+        \STATE $I = I \cup image$
+    \ENDFOR
+    \RETURN $I$
+    \end{algorithmic}
+\end{algorithm}
+
 
 アルゴリズム 1 について、P を PDF ファイル内のページ数、C を置換対象の輪郭の数とする。
 PDF から画像への変換操作の計算量は $\mathcal{O}(1)$ である。
@@ -330,6 +354,44 @@ Tesseract は光学式文字認識 (OCR) ツールであり、さまざまなフ
 画像の数はページ数と等しいため、アルゴリズム 2 全体の計算量は $\mathcal{O} (PC \log C)$ である。
 
 % アルゴリズム 2 を入れる
+%
+%
+%%
+%
+%
+%
+%
+
+\begin{algorithm}
+    \caption{Table Detection and Table Cell Value Extraction}
+    \begin{algorithmic}
+    \STATE \textbf{Data}: The set of images $I$
+    \STATE \textbf{Result}: Metadata and Data from tables in $I$
+    \FOR{each $img \in I$}
+        \STATE $img \leftarrow img$ after $cv2.\_threshold()$
+        \STATE define $vertical\_kernel$, $horizontal\_kernel$
+        \STATE $horizontal\_lines\_img$, $vertical\_lines\_img$ : result of
+        \STATE \quad morphological operations based on kernels
+        \STATE $final\_img \leftarrow$ add the two images above
+        \STATE $final\_img \leftarrow final\_img$ after $cv2.\_threshold()$
+        \STATE $contours \leftarrow cv2.findContours(final\_img)$
+        \STATE sort $contours$ by method
+        \FOR{each contour $c$ in $contours$}
+            \IF{$c$ is the contour of a table}
+                \STATE get $table\_head\_text$ from the area above $c$
+                \STATE determine if there is a cross-page table
+                \STATE determine if there are many tables in one page
+            \ELSIF{$c$ is the contour of a cell}
+                \STATE extract $text$ from the cell
+                \STATE judge if it is the same row with the previous cell
+                \STATE determine if there are side-by-side tables
+            \ENDIF
+            \STATE get the metadata and data from tables in the $img$
+        \ENDFOR
+        \STATE all metadata and data from tables in $I$
+    \ENDFOR
+    \end{algorithmic}
+\end{algorithm}
 
 
 \section{実験と分析}
